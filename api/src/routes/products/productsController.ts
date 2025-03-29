@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { db } from "../../db";
 import { productsTable } from "../../db/productsSchema";
 import { eq, like } from "drizzle-orm";
+import _ from "lodash";
+import { createProductSchema } from "../../db/productsSchema";
 
 export async function getAllProducts (req: Request, res: Response) {
     try {
@@ -53,20 +55,18 @@ export async function getProductByCategory (req: Request, res: Response) {
 
 export async function createProduct (req: Request, res: Response) {
     try {
-        const newProduct = req.body;
-        const product = await db.insert(productsTable).values({
-            ...newProduct,
-            createdAt: new Date(),
-        }).returning(); 
+        const product = await db.insert(productsTable)
+        .values(req.cleanBody)
+        .returning();
         res.status(201).json(product);
-        } catch (error) {
-            res.status(500).json({ error: "Failed to create product" });
-        }
+    } catch (error) {
+        res.status(500).json({ error: "Failed to create product" });
+    }
 };
 
 export async function updateProduct (req: Request, res: Response) {
     try {
-        const updatedProduct = req.body;
+        const updatedProduct = req.cleanBody;
         const [product] = await db.update(productsTable).set({
             ...updatedProduct,
             updatedAt: new Date(),

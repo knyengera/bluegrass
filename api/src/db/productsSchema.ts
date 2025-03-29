@@ -1,4 +1,5 @@
 import { integer, pgTable, varchar, timestamp, text, doublePrecision } from "drizzle-orm/pg-core";
+import { createInsertSchema } from "drizzle-zod";
 
 export const productsTable = pgTable("products", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
@@ -12,3 +13,14 @@ export const productsTable = pgTable("products", {
   createdAt: timestamp().notNull().defaultNow(),
   updatedAt: timestamp().notNull().defaultNow(),
 });
+
+export const createProductSchema = createInsertSchema(productsTable).omit({
+  createdAt: true,
+  updatedAt: true
+});
+
+export const updateProductSchema = createInsertSchema(productsTable)
+  .omit({
+    createdAt: true,
+  })
+  .partial();
