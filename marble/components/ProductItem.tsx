@@ -5,11 +5,14 @@ import { Image } from "@/components/ui/image";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Box } from "@/components/ui/box";
 import { Heading } from "@/components/ui/heading";
-
+import { Link } from "expo-router";
+import { Pressable } from "react-native";
 
 export default function ProductItem ({ product }: { product: Product }) {
     return (
-    <Card className="rounded-lg max-w-[360px] flex-1">
+    <Card className="rounded-lg max-w-[360px] flex-1 mx-auto w-full">
+    <Link href={`/product/${product.id}`} asChild>
+    <Pressable>
       <Image
         source={{
           uri: product.image,
@@ -21,7 +24,9 @@ export default function ProductItem ({ product }: { product: Product }) {
       <Text className="text-sm font-normal mb-2 text-typography-700">
         {product.name}
       </Text>
-      <Box className="flex-1">
+      </Pressable>
+      </Link>
+      <Box className="flex-row justify-between">
         <Heading size="md" className="mb-4">
             R{product.price}
         </Heading>
