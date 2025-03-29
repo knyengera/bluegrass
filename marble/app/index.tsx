@@ -1,9 +1,14 @@
-import { View, Text } from "react-native";
+import { FlatList } from "react-native";
+import products from "../assets/products.json";
+import ProductItem from "../components/ProductItem";
+
 
 export default function HomeScreen() {
   return (
-    <View>
-      <Text style={{ fontSize: 20, fontWeight: "bold" }}>Pantry by Marble</Text>
-    </View>
+      <FlatList
+        data={products}
+        renderItem={({ item }) => <ProductItem product={item} />}
+        keyExtractor={(item) => item.id.toString()}
+      />
   );
 }
