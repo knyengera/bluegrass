@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1743272203676,
+      "tag": "0000_volatile_texas_twister",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1743272411676,
+      "tag": "0001_parched_kronos",
+      "breakpoints": true
+    }
+  ]
+}
