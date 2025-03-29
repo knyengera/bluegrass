@@ -9,7 +9,6 @@ app.get("/", (req, res) => {
     res.send("Hello World");
 });
 
-
 app.use('/products', productsRoutes);
 app.use('/orders', ordersRoutes);
 
