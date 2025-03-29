@@ -1,27 +1,25 @@
 import { FlatList, View } from "react-native";
 import products from "../assets/products.json";
 import ProductItem from "../components/ProductItem";
-import { Heading } from "@/components/ui/heading";
-import { VStack } from "@/components/ui/vstack";
-import { Text } from "@/components/ui/text";
+import { useBreakpointValue } from "@/components/ui/utils/use-break-point-value";
 
 export default function HomeScreen() {
+
+  const nuColumns = useBreakpointValue({
+    default: 2,
+    sm: 3,
+    xl: 4,
+  }) as number;
+
   return (
     <View>
-        <VStack className="mb-6">
-        <Text size="sm">
-          Based on your selection
-        </Text>
-        <Heading size="md" className="mb-4">
-          Our Products
-        </Heading>
-      </VStack>
       <FlatList
+        key={nuColumns}
         data={products}
         renderItem={({ item }) => <ProductItem product={item} />}
         keyExtractor={(item) => item.id.toString()}
-        numColumns={2}
-        contentContainerClassName="gap-2"
+        numColumns={nuColumns}
+        contentContainerClassName="gap-2 max-w-[960px] mx-auto w-full"
         columnWrapperClassName="gap-2"
       />
     </View>

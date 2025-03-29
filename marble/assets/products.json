@@ -4,69 +4,134 @@
     "name": "Classic Margherita Pizza",
     "description": "Traditional Italian pizza with fresh tomatoes, mozzarella, basil, and extra virgin olive oil.",
     "image": "https://www.themealdb.com/images/media/meals/xd9aj21740432378.jpg",
-    "price": 249.99
+    "price": 249.99,
+    "mainCategory": "Meat",
+    "subCategory": "Beef"
   },
   {
     "id": 2,
     "name": "Grilled Salmon",
     "description": "Fresh Atlantic salmon fillet grilled to perfection with seasonal vegetables and lemon butter sauce.",
     "image": "https://www.themealdb.com/images/media/meals/vdwloy1713225718.jpg",
-    "price": 399.99
+    "price": 399.99,
+    "mainCategory": "Seafood",
+    "subCategory": "Fish"
   },
   {
     "id": 3,
     "name": "Beef Wellington",
     "description": "Premium beef tenderloin wrapped in puff pastry with mushroom duxelles and prosciutto.",
     "image": "https://www.themealdb.com/images/media/meals/kos9av1699014767.jpg",
-    "price": 349.99
+    "price": 349.99,
+    "mainCategory": "Meat",
+    "subCategory": "Beef"
   },
   {
     "id": 4,
     "name": "Lobster Thermidor",
     "description": "Classic French dish featuring lobster meat in a rich cream sauce with mushrooms and cheese.",
     "image": "https://www.themealdb.com/images/media/meals/oe8rg51699014028.jpg",
-    "price": 699.99
+    "price": 699.99,
+    "mainCategory": "Seafood",
+    "subCategory": "Shellfish"
   },
   {
     "id": 5,
     "name": "Wagyu Beef Steak",
     "description": "A5 grade Japanese Wagyu beef steak with perfect marbling and melt-in-your-mouth tenderness.",
     "image": "https://www.themealdb.com/images/media/meals/ebvuir1699013665.jpg",
-    "price": 1199.99
+    "price": 1199.99,
+    "mainCategory": "Meat",
+    "subCategory": "Beef"
   },
   {
     "id": 6,
-    "name": "Truffle Risotto",
-    "description": "Creamy Arborio rice with black truffle, parmesan cheese, and fresh herbs.",
-    "image": "https://www.themealdb.com/images/media/meals/0206h11699013358.jpg",
-    "price": 1099.99
+    "name": "Grilled Sea Bass",
+    "description": "Fresh Mediterranean sea bass with herbs and lemon butter sauce.",
+    "image": "https://www.themealdb.com/images/media/meals/uuqvwu1504629254.jpg",
+    "price": 449.99,
+    "mainCategory": "Seafood",
+    "subCategory": "Fish"
   },
   {
     "id": 7,
     "name": "Duck Confit",
     "description": "Slow-cooked duck leg in its own fat, served with crispy skin and seasonal vegetables.",
     "image": "https://www.themealdb.com/images/media/meals/7n8su21699013057.jpg",
-    "price": 1299.99
+    "price": 1299.99,
+    "mainCategory": "Meat",
+    "subCategory": "Poultry"
   },
   {
     "id": 8,
     "name": "Caviar Service",
     "description": "Premium Beluga caviar served with traditional accompaniments and blinis.",
     "image": "https://www.themealdb.com/images/media/meals/wwuqvt1487345467.jpg",
-    "price": 2499.99
+    "price": 2499.99,
+    "mainCategory": "Seafood",
+    "subCategory": "Fish"
   },
   {
     "id": 9,
     "name": "Fresh Oysters",
     "description": "Selection of fresh oysters served with mignonette sauce and lemon.",
     "image": "https://www.themealdb.com/images/media/meals/vussxq1511882648.jpg",
-    "price": 149.99
+    "price": 149.99,
+    "mainCategory": "Seafood",
+    "subCategory": "Shellfish"
   },
   {
     "id": 10,
-    "name": "Truffle Mac & Cheese",
-    "description": "Creamy macaroni and cheese with black truffle, aged cheddar, and crispy breadcrumbs.",
-    "image": "https://www.themealdb.com/images/media/meals/q8sp3j1593349686.jpg",
-    "price": 499.99
+    "name": "Pork Belly",
+    "description": "Slow-roasted pork belly with crispy crackling and apple sauce.",
+    "image": "https://www.themealdb.com/images/media/meals/4er7mj1598733193.jpg",
+    "price": 399.99,
+    "mainCategory": "Meat",
+    "subCategory": "Pork"
+  },
+  {
+    "id": 11,
+    "name": "Grilled Shrimp",
+    "description": "Jumbo shrimp marinated in garlic and herbs, grilled to perfection.",
+    "image": "https://www.themealdb.com/images/media/meals/sxrpws1511555907.jpg",
+    "price": 299.99,
+    "mainCategory": "Seafood",
+    "subCategory": "Shellfish"
+  },
+  {
+    "id": 12,
+    "name": "Chicken Marsala",
+    "description": "Classic Italian dish with chicken breast in Marsala wine sauce.",
+    "image": "https://www.themealdb.com/images/media/meals/w8umt11583268117.jpg",
+    "price": 349.99,
+    "mainCategory": "Meat",
+    "subCategory": "Poultry"
+  },
+  {
+    "id": 13,
+    "name": "Ribeye Steak",
+    "description": "Prime cut ribeye steak with perfect marbling and grilled vegetables.",
+    "image": "https://www.themealdb.com/images/media/meals/x2fw9e1560460636.jpg",
+    "price": 599.99,
+    "mainCategory": "Meat",
+    "subCategory": "Beef"
+  },
+  {
+    "id": 14,
+    "name": "Tuna Tartare",
+    "description": "Fresh yellowfin tuna with avocado, sesame, and soy dressing.",
+    "image": "https://www.themealdb.com/images/media/meals/uuqvwu1504629254.jpg",
+    "price": 449.99,
+    "mainCategory": "Seafood",
+    "subCategory": "Fish"
+  },
+  {
+    "id": 15,
+    "name": "Pork Tenderloin",
+    "description": "Herb-crusted pork tenderloin with roasted vegetables.",
+    "image": "https://www.themealdb.com/images/media/meals/4er7mj1598733193.jpg",
+    "price": 399.99,
+    "mainCategory": "Meat",
+    "subCategory": "Pork"
   }
 ]

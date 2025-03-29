@@ -6,9 +6,8 @@ export default function RootLayout() {
   return (
     <GluestackUIProvider>
       <Stack>
-        <Stack.Screen name="index" />
-        <Stack.Screen name="cart" />
-        <Stack.Screen name="products" />
+        <Stack.Screen name="index" options={{ title: "" }} />
+        <Stack.Screen name="cart" options={{ title: "Cart" }} />
       </Stack>
     </GluestackUIProvider>
   );

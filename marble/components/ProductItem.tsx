@@ -2,15 +2,15 @@ import { Product } from "../types/Product";
 import { Text } from "@/components/ui/text";
 import { Card } from "@/components/ui/card";
 import { Image } from "@/components/ui/image";
-import { Button, ButtonText } from "@/components/ui/button";
 import { Box } from "@/components/ui/box";
 import { Heading } from "@/components/ui/heading";
 import { Link } from "expo-router";
 import { Pressable } from "react-native";
+import Icon from "@/components/Icon";
 
 export default function ProductItem ({ product }: { product: Product }) {
     return (
-    <Card className="rounded-lg max-w-[360px] flex-1 mx-auto w-full">
+    <Card className="rounded-lg flex-1 mx-auto w-full overflow-hidden">
     <Link href={`/product/${product.id}`} asChild>
     <Pressable>
       <Image
@@ -30,14 +30,11 @@ export default function ProductItem ({ product }: { product: Product }) {
         <Heading size="md" className="mb-4">
             R{product.price}
         </Heading>
-        <Button
-          variant="outline"
-          className="px-4 py-2 border-outline-300 sm:flex-1"
-        >
-          <ButtonText size="sm" className="text-typography-600">
-           Add to cart
-          </ButtonText>
-        </Button>
+        <Link href="/cart" asChild>
+           <Pressable>
+           <Icon name="ShoppingCart" size={18} />
+           </Pressable>
+        </Link>
       </Box>
     </Card>
     );
