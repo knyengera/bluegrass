@@ -2,6 +2,7 @@ import express, { json, urlencoded } from "express";
 import productsRoutes from "./routes/products/index.js";
 import ordersRoutes from "./routes/orders/index.js";
 import authRoutes from "./routes/auth/index.js";
+import serverless from "serverless-http";
 const app = express();
 const port = 3000;
 
@@ -17,6 +18,10 @@ app.get("/", (req, res) => {
     res.send("Pantry by Marble Api");
 });
 
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-});
+if (process.env.NODE_ENV == 'dev') {
+    app.listen(port, () => {
+        console.log(`Server is running on port ${port}`);
+    });
+}
+
+export const handler = serverless(app);

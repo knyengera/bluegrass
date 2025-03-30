@@ -3,7 +3,7 @@ import { createUserSchema, loginUserSchema } from '../../db/userSchema.js';
 import { validateData } from '../../middleware/validationMiddleware.js';
 import { db } from "../../db/index.js";
 import { usersTable } from '../../db/userSchema.js';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
 import jwt from 'jsonwebtoken';
 const router = Router();
