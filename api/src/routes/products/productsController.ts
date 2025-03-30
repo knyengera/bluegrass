@@ -159,16 +159,28 @@ export const getProductCategoryById: RequestHandler = async (req, res) => {
 
 export const createProduct: RequestHandler = async (req, res) => {
     try {
+        if (!req.userId) {
+            res.status(401).json({ error: "Unauthorized" });
+            return;
+        }
+
+        const newProduct = req.cleanBody;
         const product = await db.insert(productsTable)
         .values({
-            ...req.cleanBody,
+            ...newProduct,
             createdAt: new Date(),
-            createdBy: req.userId,
+            createdBy: Number(req.userId),
+            updatedAt: new Date(),
+            updatedBy: Number(req.userId),
         })
         .returning();
         res.status(201).json(product);
     } catch (error) {
-        res.status(500).json({ error: "Failed to create product" });
+        console.error('Product creation error:', error);
+        res.status(500).json({ 
+            error: "Failed to create product",
+            details: error instanceof Error ? error.message : 'Unknown error'
+        });
     }
 };
 
@@ -205,8 +217,13 @@ export const deleteProduct: RequestHandler = async (req, res) => {
 
 export const createProductCategory: RequestHandler = async (req, res) => {
     try {
-        const { name, parentId = 0 } = req.body;
+        const { name, parentId = 0 } = req.cleanBody;
         const userId = req.userId;
+
+        if (!userId) {
+            res.status(401).json({ error: "Unauthorized" });
+            return;
+        }
 
         if (!name) {
             res.status(400).json({ error: "Category name is required" });
@@ -232,14 +249,20 @@ export const createProductCategory: RequestHandler = async (req, res) => {
             .values({
                 name,
                 parentId,
+                createdAt: new Date(),
                 createdBy: Number(userId),
+                updatedAt: new Date(),
                 updatedBy: Number(userId)
             })
             .returning();
 
+        if (!newCategory) {
+            res.status(500).json({ error: "Failed to create category" });
+            return;
+        }
+
         res.status(201).json(newCategory);
     } catch (error) {
-        console.error('Error creating product category:', error);
         res.status(500).json({ error: "Failed to create product category" });
     }
 };
