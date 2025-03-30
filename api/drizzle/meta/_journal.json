@@ -15,6 +15,27 @@
       "when": 1743272411676,
       "tag": "0001_parched_kronos",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1743340695013,
+      "tag": "0002_common_silver_surfer",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1743349197290,
+      "tag": "0003_purple_zodiak",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1743351758598,
+      "tag": "0004_busy_silver_sable",
+      "breakpoints": true
     }
   ]
 }

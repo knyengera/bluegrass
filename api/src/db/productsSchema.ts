@@ -7,20 +7,53 @@ export const productsTable = pgTable("products", {
   description: text(),
   price: doublePrecision().notNull(),
   quantity: integer().default(0),
-  mainCategory: varchar({ length: 255 }).notNull(),
-  subCategory: varchar({ length: 255 }).notNull(),
+  categoryId: integer().references(() => productCategoriesTable.id),
   image: varchar({ length: 255 }).notNull(),
   createdAt: timestamp().notNull().defaultNow(),
   updatedAt: timestamp().notNull().defaultNow(),
+  createdBy: integer().notNull(),
+  updatedBy: integer().notNull(),
+});
+
+export const productCategoriesTable = pgTable("product_categories", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: varchar({ length: 255 }).notNull(),
+  parentId: integer().default(0),
+  createdAt: timestamp().notNull().defaultNow(),
+  updatedAt: timestamp().notNull().defaultNow(),
+  createdBy: integer().notNull(),
+  updatedBy: integer().notNull(),
 });
 
 export const createProductSchema = createInsertSchema(productsTable).omit({
   createdAt: true,
-  updatedAt: true
+  updatedAt: true,
+  createdBy: true,
+  updatedBy: true,
 });
 
 export const updateProductSchema = createInsertSchema(productsTable)
   .omit({
     createdAt: true,
+    updatedAt: true,
+    createdBy: true,
+    updatedBy: true,
   })
   .partial();
+
+export const productCategoriesSchema = createInsertSchema(productCategoriesTable).omit({
+  createdAt: true,
+  updatedAt: true,
+  createdBy: true,
+  updatedBy: true,
+});
+
+export const updateProductCategorySchema = createInsertSchema(productCategoriesTable)
+  .omit({
+    createdAt: true,
+    updatedAt: true,
+    createdBy: true,
+    updatedBy: true,
+  })
+  .partial();
+  
