@@ -8,10 +8,11 @@ import {
     getProductByName, 
     getProductByCategory,
     getProductCategories,
-    getProductCategoryById
+    getProductCategoryById,
+    createProductCategory
 } from "./productsController.js";
 import { validateData } from "../../middleware/validationMiddleware.js";
-import { createProductSchema, updateProductSchema } from "../../db/productsSchema.js";
+import { createProductSchema, updateProductSchema, productCategoriesSchema } from "../../db/productsSchema.js";
 import { authenticateToken, verifyAdmin } from "../../middleware/authMiddleware.js";
 
 const router = Router();
@@ -25,5 +26,6 @@ router.get('/:id', getProductById);
 router.post('/', authenticateToken, verifyAdmin, validateData(createProductSchema), createProduct);
 router.put('/:id', authenticateToken, verifyAdmin, validateData(updateProductSchema), updateProduct);
 router.delete('/:id', authenticateToken, verifyAdmin, deleteProduct);
+router.post('/categories', authenticateToken, verifyAdmin, validateData(productCategoriesSchema), createProductCategory);
 
 export default router;

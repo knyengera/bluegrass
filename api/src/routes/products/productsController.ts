@@ -202,3 +202,44 @@ export const deleteProduct: RequestHandler = async (req, res) => {
         res.status(500).json({ error: "Failed to delete product" });
     }
 };
+
+export const createProductCategory: RequestHandler = async (req, res) => {
+    try {
+        const { name, parentId = 0 } = req.body;
+        const userId = req.userId;
+
+        if (!name) {
+            res.status(400).json({ error: "Category name is required" });
+            return;
+        }
+
+        // If parentId is provided, verify it exists
+        if (parentId !== 0) {
+            const parentCategory = await db
+                .select()
+                .from(productCategoriesTable)
+                .where(eq(productCategoriesTable.id, parentId))
+                .limit(1);
+
+            if (parentCategory.length === 0) {
+                res.status(404).json({ error: "Parent category not found" });
+                return;
+            }
+        }
+
+        const [newCategory] = await db
+            .insert(productCategoriesTable)
+            .values({
+                name,
+                parentId,
+                createdBy: Number(userId),
+                updatedBy: Number(userId)
+            })
+            .returning();
+
+        res.status(201).json(newCategory);
+    } catch (error) {
+        console.error('Error creating product category:', error);
+        res.status(500).json({ error: "Failed to create product category" });
+    }
+};
