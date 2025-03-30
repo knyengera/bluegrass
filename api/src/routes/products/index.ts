@@ -9,10 +9,10 @@ import {
     getProductByCategory,
     getProductCategories,
     getProductCategoryById
-} from "./productsController";
-import { validateData } from "../../middleware/validationMiddleware";
-import { createProductSchema, updateProductSchema } from "../../db/productsSchema";
-import { authenticateToken, verifyAdmin } from "../../middleware/authMiddleware";
+} from "./productsController.js";
+import { validateData } from "../../middleware/validationMiddleware.js";
+import { createProductSchema, updateProductSchema } from "../../db/productsSchema.js";
+import { authenticateToken, verifyAdmin } from "../../middleware/authMiddleware.js";
 
 const router = Router();
 

@@ -1,6 +1,6 @@
-import { Request, Response, RequestHandler } from "express";
-import { db } from "../../db";
-import { productCategoriesTable, productsTable } from "../../db/productsSchema";
+import { RequestHandler } from "express";
+import { db } from "../../db/index.js";
+import { productCategoriesTable, productsTable } from "../../db/productsSchema.js";
 import { eq, like, or, and } from "drizzle-orm";
 import _ from "lodash";
 
