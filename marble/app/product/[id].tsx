@@ -1,20 +1,32 @@
-import { Pressable, View } from "react-native";
+import { Pressable, ActivityIndicator, View } from "react-native";
 import { Text } from "@/components/ui/text";
-import products from "@/assets/products.json";
 import { Link, Stack, useLocalSearchParams } from "expo-router";
 import { Card } from "@/components/ui/card";
 import { Image } from "@/components/ui/image";
 import { Heading } from "@/components/ui/heading";
 import { Box } from "@/components/ui/box";
 import Icon from "@/components/Icon";
+import { useQuery } from "@tanstack/react-query";
+import { getProductById } from "@/api/products";
 
 export default function ProductDetailsScreen() {
   const { id } = useLocalSearchParams();
 
-  const product = products.find((product) => product.id === Number(id));
+  const { data: product, isLoading, error } = useQuery({
+    queryKey: ["product", id],
+    queryFn: () => getProductById(id as string),
+  });
 
-  if (!product) {
-    return <Text>Product not found</Text>;
+  if (isLoading) {
+    return (
+      <View className="flex-1 items-center justify-center">
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  } 
+
+  if (error) {
+    return <Text>Error Fectching Product</Text>;
   }
 
   return (
