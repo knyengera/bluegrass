@@ -2,7 +2,7 @@ import "@/global.css";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { router, Stack } from "expo-router";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, Text, View, Animated } from "react-native";
 import { ArrowLeft } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import * as Font from 'expo-font';
@@ -32,6 +32,7 @@ export default function RootLayout() {
 
   const isConnected = useNetworkStatus();
   const [key, setKey] = useState(0);
+  const [isReady, setIsReady] = useState(false);
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
@@ -45,7 +46,16 @@ export default function RootLayout() {
     }
   }, [fontsLoaded]);
 
-  if (!fontsLoaded) {
+  useEffect(() => {
+    // Simulate some initialization time
+    const timer = setTimeout(() => {
+      setIsReady(true);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!fontsLoaded || !isReady) {
     return null;
   }
 
@@ -67,17 +77,28 @@ export default function RootLayout() {
         <Stack
           screenOptions={{
             headerShown: false,
+            animation: 'slide_from_right',
+            animationDuration: 300,
+            gestureEnabled: true,
+            gestureDirection: 'horizontal',
           }}
         >
+          <Stack.Screen
+            name="index"
+            options={{
+              animation: 'fade',
+              animationDuration: 300,
+            }}
+          />
+          <Stack.Screen
+            name="product/[id]"
+            options={{
+              animation: 'slide_from_right',
+              animationDuration: 300,
+            }}
+          />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-          <Stack.Screen 
-            name="product/[id]" 
-            options={{ 
-              headerShown: true,
-              presentation: 'modal'
-            }} 
-          />
           <Stack.Screen 
             name="profile/edit" 
             options={{ 

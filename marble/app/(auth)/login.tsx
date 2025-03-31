@@ -3,7 +3,7 @@ import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { EyeIcon, EyeOffIcon, CloseIcon } from "@/components/ui/icon";
 import React from "react";
-import { View, Pressable, ActivityIndicator } from "react-native";
+import { View, Pressable, ActivityIndicator, Alert } from "react-native";
 import { Link, Stack, useRouter } from "expo-router";
 import { useMutation } from "@tanstack/react-query";
 import { login } from "@/api/auth";
@@ -14,6 +14,10 @@ export default function LoginScreen() {
   const [showPassword, setShowPassword] = React.useState(false);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [errors, setErrors] = React.useState({
+    email: "",
+    password: ""
+  });
   const router = useRouter();
 
   const setUser = useAuth((state) => state.setUser);
@@ -22,22 +26,75 @@ export default function LoginScreen() {
 
   const isLoggedIn = useAuth((state) => !!state.token);
 
-  const LoginMutation = useMutation( {
+  const validateForm = () => {
+    const newErrors = {
+      email: "",
+      password: ""
+    };
+
+    let isValid = true;
+
+    if (!email.trim()) {
+      newErrors.email = "Email is required";
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = "Please enter a valid email address";
+      isValid = false;
+    }
+
+    if (!password.trim()) {
+      newErrors.password = "Password is required";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
+  const LoginMutation = useMutation({ 
     mutationFn: () => login(email, password), 
-    onSuccess: ( data ) => {
+    onSuccess: (data) => {
       if (data.user && data.token && data.refreshToken) {
         setUser(data.user);
         setToken(data.token);
         setRefreshToken(data.refreshToken);
-        router.push("/");
+        Alert.alert(
+          "Login Successful",
+          "Welcome back! You have successfully logged in.",
+          [
+            { 
+              text: "OK",
+              style: "default",
+              onPress: () => router.push("/")
+            }
+          ],
+          { cancelable: false }
+        );
       }
-    }, onError: (error) => {
-      console.log("Login failed", error);
-      // lets show a toast
-    }});
+    }, 
+    onError: (error) => {
+      Alert.alert(
+        "Login Failed",
+        "Invalid email or password. Please try again.",
+        [
+          { 
+            text: "OK",
+            style: "default"
+          }
+        ],
+        { cancelable: true }
+      );
+    }
+  });
 
   const handleState = () => {
     setShowPassword(!showPassword);
+  };
+
+  const handleLogin = () => {
+    if (validateForm()) {
+      LoginMutation.mutate();
+    }
   };
 
   if (isLoggedIn) {
@@ -73,8 +130,13 @@ export default function LoginScreen() {
               <InputField
                 type="text"
                 value={email}
-                onChangeText={setEmail}
+                onChangeText={(text) => {
+                  setEmail(text);
+                  setErrors(prev => ({ ...prev, email: "" }));
+                }}
                 className="text-lg font-heading text-marble-green"
+                keyboardType="email-address"
+                autoCapitalize="none"
               />
               {email.length > 0 && (
                 <InputSlot className="pr-3" onPress={() => setEmail("")}>
@@ -82,6 +144,7 @@ export default function LoginScreen() {
                 </InputSlot>
               )}
             </Input>
+            {errors.email ? <Text className="text-red-500 text-sm">{errors.email}</Text> : null}
           </VStack>
 
           <VStack space="xs">
@@ -90,7 +153,10 @@ export default function LoginScreen() {
               <InputField
                 type={showPassword ? "text" : "password"}
                 value={password}
-                onChangeText={setPassword}
+                onChangeText={(text) => {
+                  setPassword(text);
+                  setErrors(prev => ({ ...prev, password: "" }));
+                }}
                 className="text-lg font-heading text-marble-green"
               />
               <InputSlot className="pr-3" onPress={handleState}>
@@ -100,13 +166,15 @@ export default function LoginScreen() {
                 />
               </InputSlot>
             </Input>
+            {errors.password ? <Text className="text-red-500 text-sm">{errors.password}</Text> : null}
           </VStack>
         </VStack>
 
         <VStack space="md" className="mt-6">
           <View className="bg-marble-green rounded-full overflow-hidden">
             <Pressable
-              onPress={() => LoginMutation.mutate()}
+              onPress={handleLogin}
+              disabled={LoginMutation.isPending}
               className="py-4 px-6"
             >
               <Text className="text-white text-lg text-center">Login</Text>
@@ -125,7 +193,6 @@ export default function LoginScreen() {
           <View className="border border-marble-green rounded-full overflow-hidden mt-4">
             <Pressable
               onPress={() => {
-                // Navigate to index screen
                 router.push("/");
               }}
               className="py-4 px-6"

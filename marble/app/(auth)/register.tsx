@@ -3,19 +3,26 @@ import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { EyeIcon, EyeOffIcon, CloseIcon } from "@/components/ui/icon";
 import React from "react";
-import { View, Pressable, ActivityIndicator } from "react-native";
+import { View, Pressable, ActivityIndicator, Alert } from "react-native";
 import { Link, Stack, useRouter } from "expo-router";
 import { useMutation } from "@tanstack/react-query";
 import { register } from "@/api/auth";
 import { useAuth } from "@/store/authStore";
 import { Box } from "@/components/ui/box";
 import Icon from "@/components/Icon";
+
 export default function RegisterScreen() {
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [mobile, setMobile] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
+  const [errors, setErrors] = React.useState({
+    name: "",
+    email: "",
+    mobile: "",
+    password: ""
+  });
   const router = useRouter();
 
   const setUser = useAuth((state) => state.setUser);
@@ -28,6 +35,49 @@ export default function RegisterScreen() {
     setShowPassword(!showPassword);
   };
 
+  const validateForm = () => {
+    const newErrors = {
+      name: "",
+      email: "",
+      mobile: "",
+      password: ""
+    };
+
+    let isValid = true;
+
+    if (!name.trim()) {
+      newErrors.name = "Name is required";
+      isValid = false;
+    }
+
+    if (!email.trim()) {
+      newErrors.email = "Email is required";
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = "Please enter a valid email address";
+      isValid = false;
+    }
+
+    if (!mobile.trim()) {
+      newErrors.mobile = "Mobile number is required";
+      isValid = false;
+    } else if (!/^\+?[1-9]\d{1,14}$/.test(mobile)) {
+      newErrors.mobile = "Please enter a valid mobile number";
+      isValid = false;
+    }
+
+    if (!password.trim()) {
+      newErrors.password = "Password is required";
+      isValid = false;
+    } else if (password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters long";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
   const RegisterMutation = useMutation({
     mutationFn: () => register(email, password, name, mobile),
     onSuccess: (data) => {
@@ -35,14 +85,40 @@ export default function RegisterScreen() {
         setUser(data.user);
         setToken(data.token);
         setRefreshToken(data.refreshToken);
-        router.push("/");
+        Alert.alert(
+          "Registration Successful",
+          "Welcome to Pantry by Marble! Your account has been created successfully.",
+          [
+            { 
+              text: "OK",
+              style: "default",
+              onPress: () => router.push("/")
+            }
+          ],
+          { cancelable: false }
+        );
       }
     },
     onError: (error) => {
-      console.log("Register failed", error);
-      // lets show a toast
+      Alert.alert(
+        "Registration Failed",
+        "There was an error creating your account. Please try again.",
+        [
+          { 
+            text: "OK",
+            style: "default"
+          }
+        ],
+        { cancelable: true }
+      );
     },
   });
+
+  const handleRegister = () => {
+    if (validateForm()) {
+      RegisterMutation.mutate();
+    }
+  };
 
   if (RegisterMutation.isPending) {
     return (
@@ -80,7 +156,10 @@ export default function RegisterScreen() {
               <InputField
                 type="text"
                 value={name}
-                onChangeText={setName}
+                onChangeText={(text) => {
+                  setName(text);
+                  setErrors(prev => ({ ...prev, name: "" }));
+                }}
                 className="text-lg font-heading text-marble-green"
               />
               {name.length > 0 && (
@@ -89,6 +168,7 @@ export default function RegisterScreen() {
                 </InputSlot>
               )}
             </Input>
+            {errors.name ? <Text className="text-red-500 text-sm">{errors.name}</Text> : null}
           </VStack>
 
           <VStack space="xs">
@@ -97,8 +177,13 @@ export default function RegisterScreen() {
               <InputField
                 type="text"
                 value={email}
-                onChangeText={setEmail}
+                onChangeText={(text) => {
+                  setEmail(text);
+                  setErrors(prev => ({ ...prev, email: "" }));
+                }}
                 className="text-lg font-heading text-marble-green"
+                keyboardType="email-address"
+                autoCapitalize="none"
               />
               {email.length > 0 && (
                 <InputSlot className="pr-3" onPress={() => setEmail("")}>
@@ -106,6 +191,7 @@ export default function RegisterScreen() {
                 </InputSlot>
               )}
             </Input>
+            {errors.email ? <Text className="text-red-500 text-sm">{errors.email}</Text> : null}
           </VStack>
 
           <VStack space="xs">
@@ -114,9 +200,13 @@ export default function RegisterScreen() {
               <InputField
                 type="text"
                 value={mobile}
-                onChangeText={setMobile}
+                onChangeText={(text) => {
+                  setMobile(text);
+                  setErrors(prev => ({ ...prev, mobile: "" }));
+                }}
                 className="text-lg font-heading text-marble-green"
                 placeholder="+27"
+                keyboardType="phone-pad"
               />
               {mobile.length > 0 && (
                 <InputSlot className="pr-3" onPress={() => setMobile("")}>
@@ -124,6 +214,7 @@ export default function RegisterScreen() {
                 </InputSlot>
               )}
             </Input>
+            {errors.mobile ? <Text className="text-red-500 text-sm">{errors.mobile}</Text> : null}
           </VStack>
 
           <VStack space="xs">
@@ -132,7 +223,10 @@ export default function RegisterScreen() {
               <InputField
                 type={showPassword ? "text" : "password"}
                 value={password}
-                onChangeText={setPassword}
+                onChangeText={(text) => {
+                  setPassword(text);
+                  setErrors(prev => ({ ...prev, password: "" }));
+                }}
                 className="text-lg font-heading text-marble-green"
               />
               <InputSlot className="pr-3" onPress={handleState}>
@@ -142,23 +236,20 @@ export default function RegisterScreen() {
                 />
               </InputSlot>
             </Input>
+            {errors.password ? <Text className="text-red-500 text-sm">{errors.password}</Text> : null}
           </VStack>
         </VStack>
 
         <VStack space="md" className="mt-6">
           <View className="bg-marble-green rounded-full overflow-hidden">
             <Pressable
-              onPress={() => RegisterMutation.mutate()}
+              onPress={handleRegister}
               disabled={RegisterMutation.isPending}
               className="py-4 px-6"
             >
               <Text className="text-white text-lg text-center">Sign up</Text>
             </Pressable>
           </View>
-
-          {RegisterMutation.error && (
-            <Text className="text-red-500 text-center">Error: {RegisterMutation.error.message}</Text>
-          )}
 
           <View className="flex-row justify-center items-center space-x-1">
             <Text className="text-typography-400">Have an account?</Text>
@@ -172,7 +263,6 @@ export default function RegisterScreen() {
           <View className="border border-marble-green rounded-full overflow-hidden mt-4">
             <Pressable
               onPress={() => {
-                // Navigate to index screen
                 router.push("/");
               }}
               className="py-4 px-6"
