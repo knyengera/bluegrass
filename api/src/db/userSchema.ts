@@ -1,5 +1,6 @@
 import { pgTable, varchar, timestamp, integer, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
+import { z } from "zod";
 
 export const usersTable = pgTable('users', {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
@@ -19,32 +20,65 @@ export const usersTable = pgTable('users', {
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
 
-export const createUserSchema = createInsertSchema(usersTable).omit({
-    createdAt: true,
-    updatedAt: true,
-    role: true,
-    isActive: true,
-});
+const baseSchema = createInsertSchema(usersTable);
 
-export const updateUserSchema = createInsertSchema(usersTable).omit({
-    createdAt: true,
-    role: true,
-    isActive: true,
-});
+export const createUserSchema = baseSchema
+    .omit({
+        createdAt: true,
+        updatedAt: true,
+        role: true,
+        isActive: true,
+    })
+    .extend({
+        name: z.string().min(1, "Name cannot be empty"),
+        email: z.string().email("Invalid email format").min(1, "Email cannot be empty"),
+        password: z.string().min(6, "Password must be at least 6 characters"),
+        mobile: z.string().min(1, "Mobile number cannot be empty"),
+    });
 
-export const loginUserSchema = createInsertSchema(usersTable).pick({
-    email: true,
-    password: true,
-});
+export const updateUserSchema = baseSchema
+    .omit({
+        createdAt: true,
+        role: true,
+        isActive: true,
+    })
+    .extend({
+        name: z.string().min(1, "Name cannot be empty").optional(),
+        email: z.string().email("Invalid email format").min(1, "Email cannot be empty").optional(),
+        password: z.string().min(6, "Password must be at least 6 characters").optional(),
+        mobile: z.string().min(1, "Mobile number cannot be empty").optional(),
+    });
 
-export const forgotPasswordSchema = createInsertSchema(usersTable).pick({
-    email: true,
-});
+export const loginUserSchema = baseSchema
+    .pick({
+        email: true,
+        password: true,
+    })
+    .extend({
+        email: z.string().email("Invalid email format").min(1, "Email cannot be empty"),
+        password: z.string().min(1, "Password cannot be empty"),
+    });
 
-export const resetPasswordSchema = createInsertSchema(usersTable).pick({
-    password: true,
-});
+export const forgotPasswordSchema = baseSchema
+    .pick({
+        email: true,
+    })
+    .extend({
+        email: z.string().email("Invalid email format").min(1, "Email cannot be empty"),
+    });
 
-export const verifyEmailSchema = createInsertSchema(usersTable).pick({
-    email: true,
-});
+export const resetPasswordSchema = baseSchema
+    .pick({
+        password: true,
+    })
+    .extend({
+        password: z.string().min(6, "Password must be at least 6 characters"),
+    });
+
+export const verifyEmailSchema = baseSchema
+    .pick({
+        email: true,
+    })
+    .extend({
+        email: z.string().email("Invalid email format").min(1, "Email cannot be empty"),
+    });
