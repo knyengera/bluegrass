@@ -25,10 +25,15 @@ export default function CartScreen() {
 
   const createOrderMutation = useMutation({
     mutationFn: () => createOrder({
-      items,
-      subtotal,
-      deliveryFee,
-      total
+      order: {
+        totalPrice: total,
+        status: 'pending'
+      },
+      items: items.map(item => ({
+        productId: item.product.id,
+        quantity: item.quantity,
+        price: item.product.price
+      }))
     }),
     onSuccess: () => {
       clearCart();

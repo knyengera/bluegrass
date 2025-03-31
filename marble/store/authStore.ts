@@ -11,11 +11,13 @@ interface User {
 interface AuthState {
   user: User | null;
   token: string | null;
+  refreshToken: string | null;
 }
 
 interface AuthActions {
   setUser: (user: User | null) => void;
   setToken: (token: string | null) => void;
+  setRefreshToken: (refreshToken: string | null) => void;
 }
 
 export const useAuth = create<AuthState & AuthActions>()(
@@ -23,8 +25,10 @@ export const useAuth = create<AuthState & AuthActions>()(
     (set) => ({
       user: null,
       token: null,
+      refreshToken: null,
       setUser: (user) => set({ user }),
       setToken: (token) => set({ token }),
+      setRefreshToken: (refreshToken) => set({ refreshToken }),
     }),
     {
       name: "auth-store",

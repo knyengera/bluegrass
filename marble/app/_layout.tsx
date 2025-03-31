@@ -35,10 +35,20 @@ export default function RootLayout() {
                 </Link>
               )}
             </HStack>
+          ),
+          headerLeft: () => (
+            <Link href="login" asChild className="ml-4">
+              <Pressable>
+                <Icon name="User" size={18} color="black" />
+              </Pressable>
+            </Link>
           )
+          
         }}>
           <Stack.Screen name="index" options={{ title: "" }} />
           <Stack.Screen name="cart" options={{ title: "Cart" }} />
+          <Stack.Screen name="(auth)/login" options={{ title: "Login" }} />
+          <Stack.Screen name="(auth)/register" options={{ title: "Register" }} />
         </Stack>
       </GluestackUIProvider>
     </QueryClientProvider>

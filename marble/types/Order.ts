@@ -1,11 +1,13 @@
 import { Product } from "./Product";
 
 export interface Order {
+    order: {
+        totalPrice: number;
+        status: string;
+    };
     items: {
-        product: Product;
+        productId: number;
         quantity: number;
+        price: number;
     }[];
-    subtotal: number;
-    deliveryFee: number;
-    total: number;
 } 
