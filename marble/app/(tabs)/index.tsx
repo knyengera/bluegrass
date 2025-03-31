@@ -1,5 +1,7 @@
 import { FlatList, View, ActivityIndicator } from "react-native";
+import { useState } from "react";
 import ProductItem from "../../components/ProductItem";
+import CategoryFilter from "../../components/CategoryFilter";
 import { useBreakpointValue } from "@/components/ui/utils/use-break-point-value";
 import { getProducts, getProductCategories } from "../../api/products";
 import { useQuery } from "@tanstack/react-query";
@@ -7,10 +9,26 @@ import { Text } from "@/components/ui/text";
 import { useAuth } from "@/store/authStore";
 import { router } from "expo-router";
 
+type Product = {
+  id: number;
+  categoryId: number;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+};
+
 export default function HomeScreen() {
-  const { data: products, isLoading, error } = useQuery({
+  const [selectedCategory, setSelectedCategory] = useState('All');
+
+  const { data: products, isLoading: productsLoading, error: productsError } = useQuery({
     queryKey: ["products"],
     queryFn: getProducts,
+  });
+
+  const { data: categories, isLoading: categoriesLoading, error: categoriesError } = useQuery({
+    queryKey: ["categories"],
+    queryFn: getProductCategories,
   });
 
   const nuColumns = useBreakpointValue({
@@ -19,7 +37,37 @@ export default function HomeScreen() {
     xl: 4,
   }) as number;
 
-  if (isLoading) {
+  const filteredProducts = products?.filter((product: Product) => {
+    if (selectedCategory === 'All') return true;
+    
+    // Find the selected category in the categories tree
+    const findCategory = (cats: any[]): any => {
+      for (const cat of cats) {
+        if (cat.name === selectedCategory) return cat;
+        if (cat.children) {
+          const found = findCategory(cat.children);
+          if (found) return found;
+        }
+      }
+      return null;
+    };
+
+    const selectedCategoryData = findCategory(categories || []);
+    if (!selectedCategoryData) return false;
+
+    // Check if the product's categoryId matches the selected category or any of its children
+    const isInCategory = (category: any): boolean => {
+      if (product.categoryId === category.id) return true;
+      if (category.children) {
+        return category.children.some((child: any) => isInCategory(child));
+      }
+      return false;
+    };
+
+    return isInCategory(selectedCategoryData);
+  });
+
+  if (productsLoading || categoriesLoading) {
     return (
       <View className="flex-1 items-center justify-center">
         <ActivityIndicator size="large" />
@@ -27,19 +75,25 @@ export default function HomeScreen() {
     );
   }
 
-  if (error) {
+  if (productsError || categoriesError) {
     return (
       <View className="flex-1 items-center justify-center">
-        <Text>Error Fetching Products</Text>
+        <Text>Error Fetching Data</Text>
       </View>
     );
   }
 
   return (
     <View className="flex-1">
+      <CategoryFilter
+        categories={categories || []}
+        selectedCategory={selectedCategory}
+        onSelectCategory={setSelectedCategory}
+      />
+      
       <FlatList
         key={nuColumns}
-        data={products}
+        data={filteredProducts}
         renderItem={({ item }) => <ProductItem product={item} />}
         keyExtractor={(item) => item.id.toString()}
         numColumns={nuColumns}
