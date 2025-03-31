@@ -1,7 +1,7 @@
 import { integer, pgTable, varchar, timestamp, doublePrecision, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
-import { productsTable } from "./productsSchema";
-import { usersTable } from "./userSchema";
+import { productsTable } from "./productsSchema.js";
+import { usersTable } from "./userSchema.js";
 import { z } from "zod";
 
 export const ordersTable = pgTable("orders", {
