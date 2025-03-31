@@ -1,16 +1,18 @@
+import React, { useState } from "react";
 import { Product } from "../types/Product";
 import { Text } from "@/components/ui/text";
 import { Card } from "@/components/ui/card";
 import { Image } from "@/components/ui/image";
 import { Box } from "@/components/ui/box";
 import { Heading } from "@/components/ui/heading";
-import { Link } from "expo-router";
 import { Pressable, Alert } from "react-native";
 import Icon from "@/components/Icon";
 import { useCart } from "@/store/cartStore";
+import ProductActionSheet from "./ProductActionSheet";
 
 export default function ProductItem ({ product }: { product: Product }) {
     const { addProduct } = useCart();
+    const [isActionSheetVisible, setIsActionSheetVisible] = useState(false);
 
     const handleAddToCart = () => {
         addProduct(product);
@@ -28,9 +30,9 @@ export default function ProductItem ({ product }: { product: Product }) {
     };
 
     return (
+    <>
     <Card className="rounded-lg flex-1 mx-auto w-full overflow-hidden">
-    <Link href={`/product/${product.id}`} asChild>
-    <Pressable>
+    <Pressable onPress={() => setIsActionSheetVisible(true)}>
       <Image
         source={{
           uri: product.image,
@@ -43,7 +45,6 @@ export default function ProductItem ({ product }: { product: Product }) {
         {product.name}
       </Text>
       </Pressable>
-      </Link>
       <Box className="flex-row justify-between">
         <Heading size="md" className="mb-4">
             R{product.price}
@@ -56,6 +57,12 @@ export default function ProductItem ({ product }: { product: Product }) {
         </Pressable>
       </Box>
     </Card>
+    <ProductActionSheet 
+      product={product}
+      visible={isActionSheetVisible}
+      onClose={() => setIsActionSheetVisible(false)}
+    />
+    </>
     );
 }
 
