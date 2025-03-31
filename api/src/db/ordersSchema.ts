@@ -1,7 +1,7 @@
 import { integer, pgTable, varchar, timestamp, doublePrecision, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
-import { productsTable } from "./productsSchema.js";
-import { usersTable } from "./userSchema.js";
+import { productsTable } from "./productsSchema";
+import { usersTable } from "./userSchema";
 import { z } from "zod";
 
 export const ordersTable = pgTable("orders", {
@@ -49,6 +49,9 @@ export const updateOrderSchema = createInsertSchema(ordersTable).partial().omit(
 export const createOrderItemSchema = createInsertSchema(orderItemsTable).omit({
   updatedAt: true,
   updatedBy: true,
+  orderId: true,
+  createdAt: true,
+  createdBy: true,
 });
 
 export const insertOrderWithItemsSchema = z.object({
