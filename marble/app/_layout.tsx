@@ -1,7 +1,9 @@
 import "@/global.css";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
+import { Pressable, Text } from "react-native";
+import { ArrowLeft } from "lucide-react-native";
 
 const queryClient = new QueryClient();
 
@@ -18,6 +20,18 @@ export default function RootLayout() {
               headerShown: true,
               presentation: 'modal'
             }} 
+          />
+          <Stack.Screen 
+            name="profile/edit" 
+            options={{ 
+              headerShown: true,
+              title: "Edit Profile",
+              headerLeft: () => (
+                <Pressable onPress={() => router.back()}>
+                  <ArrowLeft size={24} color="black" />
+                </Pressable>
+              )
+            }}   
           />
         </Stack>
       </GluestackUIProvider>
