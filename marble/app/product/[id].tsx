@@ -8,9 +8,12 @@ import { Box } from "@/components/ui/box";
 import Icon from "@/components/Icon";
 import { useQuery } from "@tanstack/react-query";
 import { getProductById } from "@/api/products";
+import { useCart } from "@/store/cartStore";
 
 export default function ProductDetailsScreen() {
   const { id } = useLocalSearchParams();
+
+  const addProduct  = useCart((state) => state.addProduct);
 
   const { data: product, isLoading, error } = useQuery({
     queryKey: ["product", id],
@@ -51,11 +54,12 @@ export default function ProductDetailsScreen() {
         <Heading size="xs" className="mb-4">
             R{product.price}
         </Heading>
-        <Link href="/cart" asChild>
-           <Pressable>
-           <Icon name="ShoppingCart" size={18} />
-           </Pressable>
-        </Link>
+        <Pressable 
+          onPress={() => addProduct(product)}
+          className="border border-marble-green rounded-full w-8 h-8 items-center justify-center"
+        >
+           <Icon name="ShoppingCart" size={16} color="#54634B" />
+        </Pressable>
       </Box>
     </Card>
     </Box>

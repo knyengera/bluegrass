@@ -1,4 +1,8 @@
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
+import { Order } from "@/types/Order";
+import { useAuth } from "@/store/authStore";
+
+const token = useAuth.getState().token;
 
 export async function getProducts() {
     const response = await fetch(`${API_URL}/products`);
@@ -35,6 +39,22 @@ export async function getProductCategoryById(id: string) {
     const data = await response.json();
     return data;
 }
+
+export async function createOrder(order: Order) {
+    const response = await fetch(`${API_URL}/orders`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `${token}`,
+        },
+        body: JSON.stringify(order),
+    });
+    if (!response.ok) {
+        throw new Error("Failed to create order");
+    }
+    const data = await response.json();
+}
+
 
 
 
