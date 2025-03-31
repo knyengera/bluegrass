@@ -17,12 +17,6 @@ export default function CartScreen() {
   const deliveryFee = subtotal * 0.10; // 10% of subtotal
   const total = subtotal + deliveryFee;
 
-  useEffect(() => {
-    if (items.length === 0) {
-      router.replace("/");
-    }
-  }, [items]);
-
   const createOrderMutation = useMutation({
     mutationFn: () => createOrder({
       order: {
@@ -47,6 +41,21 @@ export default function CartScreen() {
     }
   };
 
+  if (items.length === 0) {
+    return (
+      <View className="flex-1 bg-white items-center justify-center p-4">
+        <Text className="text-2xl font-bold text-marble-green mb-4">Your cart is empty</Text>
+        <Text className="text-gray-600 text-center mb-8">No products added yet. Please add some products to your cart.</Text>
+        <Pressable 
+          className="bg-marble-green rounded-full px-8 py-4"
+          onPress={() => router.push("/")}
+        >
+          <Text className="text-white text-lg font-semibold">Browse Products</Text>
+        </Pressable>
+      </View>
+    );
+  }
+  
   return (
     <View className="flex-1 bg-white">
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
