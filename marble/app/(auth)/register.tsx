@@ -53,18 +53,12 @@ export default function RegisterScreen() {
     if (!email.trim()) {
       newErrors.email = "Email is required";
       isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = "Please enter a valid email address";
-      isValid = false;
-    }
+    } 
 
     if (!mobile.trim()) {
       newErrors.mobile = "Mobile number is required";
       isValid = false;
-    } else if (!/^\+?[1-9]\d{1,14}$/.test(mobile)) {
-      newErrors.mobile = "Please enter a valid mobile number";
-      isValid = false;
-    }
+    } 
 
     if (!password.trim()) {
       newErrors.password = "Password is required";
