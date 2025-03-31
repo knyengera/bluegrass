@@ -83,6 +83,12 @@ export default function HomeScreen() {
     );
   }
 
+  const renderItem = ({ item }: { item: Product }) => (
+    <View style={{ flex: 1, maxWidth: `${100 / nuColumns}%` }}>
+      <ProductItem product={item} />
+    </View>
+  );
+
   return (
     <View className="flex-1 bg-white">
       <CategoryFilter
@@ -99,7 +105,7 @@ export default function HomeScreen() {
       <FlatList
         key={nuColumns}
         data={filteredProducts}
-        renderItem={({ item }) => <ProductItem product={item} />}
+        renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
         numColumns={nuColumns}
         contentContainerClassName="gap-2 max-w-[960px] mx-auto w-full"
