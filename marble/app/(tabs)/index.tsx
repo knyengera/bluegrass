@@ -1,23 +1,17 @@
 import { FlatList, View, ActivityIndicator } from "react-native";
-import ProductItem from "../components/ProductItem";
+import ProductItem from "../../components/ProductItem";
 import { useBreakpointValue } from "@/components/ui/utils/use-break-point-value";
-import { getProducts, getProductCategories } from "../api/products";
+import { getProducts, getProductCategories } from "../../api/products";
 import { useQuery } from "@tanstack/react-query";
 import { Text } from "@/components/ui/text";
 import { useAuth } from "@/store/authStore";
 import { router } from "expo-router";
 
 export default function HomeScreen() {
-
   const { data: products, isLoading, error } = useQuery({
     queryKey: ["products"],
     queryFn: getProducts,
   });
-
-  // const { data: productCategories, isLoading: productCategoriesLoading, error: productCategoriesError } = useQuery({
-  //   queryKey: ["productCategories"],
-  //   queryFn: getProductCategories,
-  // });
 
   const nuColumns = useBreakpointValue({
     default: 2,
@@ -41,14 +35,6 @@ export default function HomeScreen() {
     );
   }
 
-  // if (productCategoriesLoading) {
-  //   return <ActivityIndicator />;
-  // }
-
-  // if (productCategoriesError) {
-  //   return <Text>Error Fectching Product Categories</Text>;
-  // }
-
   return (
     <View className="flex-1">
       <FlatList
@@ -62,4 +48,4 @@ export default function HomeScreen() {
       />
     </View>
   );
-}
+} 
