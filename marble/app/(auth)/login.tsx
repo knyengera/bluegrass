@@ -69,7 +69,7 @@ export default function LoginScreen() {
         <VStack space="md">
           <VStack space="xs">
             <Text className="text-sm text-typography-400">Email</Text>
-            <Input className="border-b border-typography-200 rounded-none pb-2">
+            <Input className="border-0 border-b border-typography-200 rounded-none pb-2">
               <InputField
                 type="text"
                 value={email}
@@ -86,7 +86,7 @@ export default function LoginScreen() {
 
           <VStack space="xs">
             <Text className="text-sm text-typography-400">Password</Text>
-            <Input className="border-b border-typography-200 rounded-none pb-2">
+            <Input className="border-0 border-b border-typography-200 rounded-none pb-2">
               <InputField
                 type={showPassword ? "text" : "password"}
                 value={password}
