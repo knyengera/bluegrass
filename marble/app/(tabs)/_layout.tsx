@@ -5,9 +5,11 @@ import { Pressable, Text } from "react-native";
 import { HStack } from "@/components/ui/hstack";
 import Icon from "@/components/Icon";
 import { Link } from "expo-router";
+import { useAuth } from "@/store/authStore";
 
 export default function TabsLayout() {
   const { items } = useCart();
+  const { user, logout } = useAuth();
   const cartItemsNumber = items.length;
 
   return (
@@ -51,11 +53,17 @@ export default function TabsLayout() {
           </HStack>
         ),
         headerLeft: () => (
-          <Link href="/(auth)/login" asChild>
-            <Pressable className="ml-4">
-              <Icon name="User" size={18} color="black" />
+          user ? (
+            <Pressable className="ml-4" onPress={logout}>
+              <Icon name="LogOut" size={18} color="black" />
             </Pressable>
-          </Link>
+          ) : (
+            <Link href="/(auth)/login" asChild>
+              <Pressable className="ml-4">
+                <Icon name="User" size={18} color="black" />
+              </Pressable>
+            </Link>
+          )
         ),
       }}
     >

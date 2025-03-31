@@ -18,6 +18,7 @@ interface AuthActions {
   setUser: (user: User | null) => void;
   setToken: (token: string | null) => void;
   setRefreshToken: (refreshToken: string | null) => void;
+  logout: () => void;
 }
 
 export const useAuth = create<AuthState & AuthActions>()(
@@ -29,6 +30,10 @@ export const useAuth = create<AuthState & AuthActions>()(
       setUser: (user) => set({ user }),
       setToken: (token) => set({ token }),
       setRefreshToken: (refreshToken) => set({ refreshToken }),
+      logout: () => {
+        set({ user: null, token: null, refreshToken: null });
+        AsyncStorage.removeItem('auth-store');
+      },
     }),
     {
       name: "auth-store",

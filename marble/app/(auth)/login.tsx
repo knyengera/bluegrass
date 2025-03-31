@@ -4,10 +4,11 @@ import { VStack } from "@/components/ui/vstack";
 import { EyeIcon, EyeOffIcon, CloseIcon } from "@/components/ui/icon";
 import React from "react";
 import { View, Pressable, ActivityIndicator } from "react-native";
-import { Link, useRouter } from "expo-router";
+import { Link, Stack, useRouter } from "expo-router";
 import { useMutation } from "@tanstack/react-query";
 import { login } from "@/api/auth";
 import { useAuth } from "@/store/authStore";
+import Icon from "@/components/Icon";
 
 export default function LoginScreen() {
   const [showPassword, setShowPassword] = React.useState(false);
@@ -53,7 +54,18 @@ export default function LoginScreen() {
 
   return (
     <View className="flex-1 bg-white px-6 pt-10">
+          <Stack.Screen options={{ 
+          headerLeft: () => <Link href="/register" asChild><Pressable><Icon name="ArrowLeft" size={18} color="black" /></Pressable></Link>,
+          headerRight: () => 
+          <Link href="/" asChild><Pressable><Text>Explore our App</Text></Pressable></Link> }} />
       <VStack space="xl" className="w-full h-full">
+      <VStack space="xs">
+          <Text className="text-4xl text-marble-green italic font-bold">Welcome back to</Text>
+          <Text className="text-5xl text-marble-green italic font-bold">Pantry by Marble</Text>
+          <Text className="text-2xl text-typography-400 mt-1">
+            Login to your account to continue
+          </Text>
+        </VStack>
         <VStack space="md">
           <VStack space="xs">
             <Text className="text-sm text-typography-400">Email</Text>

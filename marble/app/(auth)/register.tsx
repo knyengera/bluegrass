@@ -4,11 +4,12 @@ import { VStack } from "@/components/ui/vstack";
 import { EyeIcon, EyeOffIcon, CloseIcon } from "@/components/ui/icon";
 import React from "react";
 import { View, Pressable, ActivityIndicator } from "react-native";
-import { Link, useRouter } from "expo-router";
+import { Link, Stack, useRouter } from "expo-router";
 import { useMutation } from "@tanstack/react-query";
 import { register } from "@/api/auth";
 import { useAuth } from "@/store/authStore";
-
+import { Box } from "@/components/ui/box";
+import Icon from "@/components/Icon";
 export default function RegisterScreen() {
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
@@ -57,19 +58,25 @@ export default function RegisterScreen() {
 
   return (
     <View className="flex-1 bg-white px-6 pt-10">
+        <Stack.Screen options={{ 
+          headerLeft: () => <Link href="/login" asChild><Pressable><Icon name="ArrowLeft" size={18} color="black" /></Pressable></Link>,
+          headerRight: () => 
+          <Link href="/" asChild><Pressable><Text>Explore our App</Text></Pressable></Link> }} />
       <VStack space="xl" className="w-full">
         <VStack space="xs">
-          <Text className="text-2xl text-typography-600 italic">Welcome to</Text>
-          <Text className="text-2xl text-typography-600 italic">Pantry by Marble</Text>
-          <Text className="text-sm text-typography-400 mt-1">
+          <Text className="text-5xl text-marble-green italic font-bold">Welcome to</Text>
+          <Text className="text-5xl text-marble-green italic font-bold">Pantry by Marble</Text>
+          <Text className="text-2xl text-typography-400 mt-1">
             Sign up for easy payments, collection and much more
           </Text>
         </VStack>
 
+        <Box className="w-full h-3 bg-marble-green" />
+
         <VStack space="md" className="mt-6">
           <VStack space="xs">
             <Text className="text-sm text-typography-400">Full name</Text>
-            <Input className="border-b border-typography-200 rounded-none pb-2">
+            <Input className="border-0 border-b border-typography-200 rounded-none pb-2">
               <InputField
                 type="text"
                 value={name}
@@ -86,7 +93,7 @@ export default function RegisterScreen() {
 
           <VStack space="xs">
             <Text className="text-sm text-typography-400">Email</Text>
-            <Input className="border-b border-typography-200 rounded-none pb-2">
+            <Input className="border-0 border-b border-typography-200 rounded-none pb-2">
               <InputField
                 type="text"
                 value={email}
@@ -103,7 +110,7 @@ export default function RegisterScreen() {
 
           <VStack space="xs">
             <Text className="text-sm text-typography-400">Mobile number</Text>
-            <Input className="border-b border-typography-200 rounded-none pb-2">
+            <Input className="border-0 border-b border-typography-200 rounded-none pb-2">
               <InputField
                 type="text"
                 value={mobile}
@@ -121,7 +128,7 @@ export default function RegisterScreen() {
 
           <VStack space="xs">
             <Text className="text-sm text-typography-400">Create password</Text>
-            <Input className="border-b border-typography-200 rounded-none pb-2">
+            <Input className="border-0 border-b border-typography-200 rounded-none pb-2">
               <InputField
                 type={showPassword ? "text" : "password"}
                 value={password}
