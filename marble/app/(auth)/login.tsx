@@ -60,9 +60,9 @@ export default function LoginScreen() {
           <Link href="/" asChild><Pressable><Text>Explore our App</Text></Pressable></Link> }} />
       <VStack space="xl" className="w-full h-full">
       <VStack space="xs">
-          <Text className="text-4xl text-marble-green italic font-bold">Welcome back to</Text>
-          <Text className="text-5xl text-marble-green italic font-bold">Pantry by Marble</Text>
-          <Text className="text-2xl text-typography-400 mt-1">
+          <Text className="text-4xl text-marble-green italic font-bold font-heading">Welcome back to</Text>
+          <Text className="text-5xl text-marble-green italic font-bold font-heading">Pantry by Marble</Text>
+          <Text className="text-lg text-marble-green mt-1">
             Login to your account to continue
           </Text>
         </VStack>
@@ -74,11 +74,11 @@ export default function LoginScreen() {
                 type="text"
                 value={email}
                 onChangeText={setEmail}
-                className="text-base"
+                className="text-base font-heading text-marble-green"
               />
               {email.length > 0 && (
                 <InputSlot className="pr-3" onPress={() => setEmail("")}>
-                  <InputIcon as={CloseIcon} className="text-typography-400" />
+                  <InputIcon as={CloseIcon} className="text-marble-green font-heading" />
                 </InputSlot>
               )}
             </Input>
@@ -91,12 +91,12 @@ export default function LoginScreen() {
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChangeText={setPassword}
-                className="text-base"
+                className="text-base font-heading text-marble-green"
               />
               <InputSlot className="pr-3" onPress={handleState}>
                 <InputIcon
                   as={showPassword ? EyeIcon : EyeOffIcon}
-                  className="text-typography-400"
+                  className="text-marble-green font-heading"
                 />
               </InputSlot>
             </Input>

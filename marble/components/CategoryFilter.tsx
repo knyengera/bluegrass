@@ -2,6 +2,7 @@ import React from 'react';
 import { ScrollView, Pressable, View } from 'react-native';
 import { Text } from '@/components/ui/text';
 import { cn } from '@/lib/utils';
+import { Box } from './ui/box';
 
 type Category = {
   id: number;
@@ -30,10 +31,10 @@ export default function CategoryFilter({
 
   return (
     <View className="my-6 bg-white">
-      <Text className="text-5xl text-marble-green italic font-bold px-4 mb-2">
+      <Text className="text-5xl text-marble-green px-4 mb-2 font-heading">
         {secondLevelCategory?.name || ''}
       </Text>
-      <View className="w-full h-3 bg-marble-green mb-4" />
+      <Box className="h-[20px] bg-marble-green w-full my-2" />  
       
       <ScrollView 
         horizontal 

@@ -29,8 +29,8 @@ export default function FavoritesScreen() {
     <View className="flex-1 bg-white">
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <View className="p-4">
-          <Text className="text-2xl font-bold text-marble-green">Favorites</Text>
-          <Box className="h-[6px] bg-marble-green w-full my-2" />
+          <Text className="text-5xl font-heading text-marble-green">Favorites</Text>
+          <Box className="h-[20px] bg-marble-green w-full my-2" />
           {items.map((item) => (
             <Card key={item.id}>
               <View className="flex-row gap-4">

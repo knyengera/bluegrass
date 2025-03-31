@@ -62,8 +62,9 @@ export default function CartScreen() {
     <View className="flex-1 bg-white">
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <View className="p-4">
-          <Text className="text-2xl font-bold text-marble-green">Cart</Text>
-          <Box className="h-[6px] bg-marble-green w-full my-2" />
+          <Text className="text-5xl font-heading text-marble-green">Cart</Text>
+          <Text className="text-3xl font-heading-normal text-marble-green mt-2">Your Shopping Cart</Text>
+          <Box className="h-[20px] bg-marble-green w-full my-2" />
           {items.map((item) => (
             <Card key={item.product.id} >
               <View className="flex-row gap-4">
@@ -77,8 +78,8 @@ export default function CartScreen() {
                 />
                 <View className="flex-1 justify-between ">
                   <View>
-                    <Text className="text-lg italic">{item.product.name}</Text>
-                    <Text className="text-lg font-semibold">R{item.product.price}</Text>
+                    <Text className="text-xl font-heading uppercase text-marble-green">{item.product.name}</Text>
+                    <Text className="text-xl font-bold text-marble-green">R{item.product.price}</Text>
                   </View>
                   
                   <Box className="flex-row items-center justify-between mt-2">
@@ -119,8 +120,9 @@ export default function CartScreen() {
               placeholder="Add your promo code"
               className="flex-1 px-4 py-3"
             />
+            <Box className="h-[60%] w-[2px] bg-marble-green self-center" />
             <Pressable className="px-6 py-3">
-              <Text className="text-marble-green">Apply</Text>
+              <Text className="text-gray-400">Apply</Text>
             </Pressable>
           </View>
 
@@ -140,8 +142,8 @@ export default function CartScreen() {
               <Box className="h-[2px] bg-marble-green w-full mb-4" />
               
               <View className="flex-row justify-between">
-                <Text className="text-xl font-semibold text-marble-green">Total</Text>
-                <Text className="text-xl font-bold text-marble-green">R {total.toFixed(2)}</Text>
+                <Text className="text-xl font-heading-normal font-bold text-marble-green">Total</Text>
+                <Text className="text-xl font-heading-normal font-bold text-marble-green">R {total.toFixed(2)}</Text>
               </View>
             </View>
 

@@ -37,7 +37,7 @@ export default function ProductDetailsScreen() {
   }
 
   return (
-    <Box className="flex-1 items-center p-3">
+    <Box className="flex-1 items-center p-3 bg-white">
     <Stack.Screen name="product/[id]" options={{ title: product.name }} />
     <Card className="p-5 rounded-lg max-w-[960px] w-full flex-1">
       <Image
@@ -48,14 +48,14 @@ export default function ProductDetailsScreen() {
         resizeMode="contain"
         alt={`${product.name} image`}
       />
-      <Heading size="md" className="mb-4">
+      <Heading size="md" className="mb-4 text-xl font-heading uppercase text-marble-green">
         {product.name}
       </Heading>
-        <Text size="sm" className="mb-3">
+        <Text size="sm" className="mb-3 text-marble-green text-lg font-body">
           {product.description}
         </Text>
       <Box className="flex-row justify-between">
-        <Heading size="xs" className="mb-4">
+        <Heading size="xs" className="mb-4 text-xl font-bold text-marble-green">
             R{product.price}
         </Heading>
         <Box className="flex-row gap-2">
