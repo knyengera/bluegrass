@@ -9,16 +9,20 @@ import Icon from "@/components/Icon";
 import { useQuery } from "@tanstack/react-query";
 import { getProductById } from "@/api/products";
 import { useCart } from "@/store/cartStore";
+import { useFavorite } from "@/store/favoritesStore";
 
 export default function ProductDetailsScreen() {
   const { id } = useLocalSearchParams();
 
-  const addProduct  = useCart((state) => state.addProduct);
+  const addProduct = useCart((state) => state.addProduct);
+  const { items, addItem, removeItem } = useFavorite();
 
   const { data: product, isLoading, error } = useQuery({
     queryKey: ["product", id],
     queryFn: () => getProductById(id as string),
   });
+
+  const isFavorite = items.some(item => item.id === product?.id);
 
   if (isLoading) {
     return (
@@ -54,12 +58,20 @@ export default function ProductDetailsScreen() {
         <Heading size="xs" className="mb-4">
             R{product.price}
         </Heading>
-        <Pressable 
-          onPress={() => addProduct(product)}
-          className="border border-marble-green rounded-full w-8 h-8 items-center justify-center"
-        >
-           <Icon name="ShoppingCart" size={16} color="#54634B" />
-        </Pressable>
+        <Box className="flex-row gap-2">
+          <Pressable 
+            onPress={() => addProduct(product)}
+            className="border border-marble-green rounded-full w-8 h-8 items-center justify-center"
+          >
+            <Icon name="ShoppingCart" size={16} color="#54634B" />
+          </Pressable>
+          <Pressable 
+            onPress={() => isFavorite ? removeItem(product) : addItem(product)}
+            className="border border-marble-green rounded-full w-8 h-8 items-center justify-center"
+          >
+            <Icon name={isFavorite ? "Heart" : "HeartOff"} size={16} color="#54634B" />
+          </Pressable>
+        </Box>
       </Box>
     </Card>
     </Box>
