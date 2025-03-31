@@ -35,7 +35,6 @@ export default function CartScreen() {
       }, token);
     },
     onSuccess: () => {
-      console.log("Order created successfully");
       clearCart();
       router.replace("/");
     }

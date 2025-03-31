@@ -39,8 +39,6 @@ export async function getProductCategoryById(id: string) {
 }
 
 export async function createOrder(order: Order, token: string) {
-    console.log("order", order);
-    console.log("token", token);
     const response = await fetch(`${API_URL}/orders`, {
         method: "POST",
         headers: {
