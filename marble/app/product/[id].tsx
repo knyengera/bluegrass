@@ -1,4 +1,4 @@
-import { Pressable, ActivityIndicator, View } from "react-native";
+import { Pressable, ActivityIndicator, View, Alert } from "react-native";
 import { Text } from "@/components/ui/text";
 import { Link, Stack, useLocalSearchParams } from "expo-router";
 import { Card } from "@/components/ui/card";
@@ -23,6 +23,36 @@ export default function ProductDetailsScreen() {
   });
 
   const isFavorite = items.some(item => item.id === product?.id);
+
+  const handleAddToCart = () => {
+    addProduct(product);
+    Alert.alert(
+      "Added to Cart",
+      `${product.name} has been added to your cart`,
+      [{ text: "OK", style: "default" }],
+      { cancelable: true }
+    );
+  };
+
+  const handleToggleFavorite = () => {
+    if (isFavorite) {
+      removeItem(product);
+      Alert.alert(
+        "Removed from Favorites",
+        `${product.name} has been removed from your favorites`,
+        [{ text: "OK", style: "default" }],
+        { cancelable: true }
+      );
+    } else {
+      addItem(product);
+      Alert.alert(
+        "Added to Favorites",
+        `${product.name} has been added to your favorites`,
+        [{ text: "OK", style: "default" }],
+        { cancelable: true }
+      );
+    }
+  };
 
   if (isLoading) {
     return (
@@ -60,13 +90,13 @@ export default function ProductDetailsScreen() {
         </Heading>
         <Box className="flex-row gap-2">
           <Pressable 
-            onPress={() => addProduct(product)}
+            onPress={handleAddToCart}
             className="border border-marble-green rounded-full w-8 h-8 items-center justify-center"
           >
             <Icon name="ShoppingCart" size={16} color="#54634B" />
           </Pressable>
           <Pressable 
-            onPress={() => isFavorite ? removeItem(product) : addItem(product)}
+            onPress={handleToggleFavorite}
             className="border border-marble-green rounded-full w-8 h-8 items-center justify-center"
           >
             <Icon name={isFavorite ? "Heart" : "HeartOff"} size={16} color="#54634B" />

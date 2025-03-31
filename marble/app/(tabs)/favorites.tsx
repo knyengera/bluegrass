@@ -1,4 +1,4 @@
-import { View, Text, Pressable, ScrollView } from "react-native";
+import { View, Text, Pressable, ScrollView, Alert } from "react-native";
 import { useFavorite } from "@/store/favoritesStore";
 import { Image } from "@/components/ui/image";
 import { Card } from "@/components/ui/card";
@@ -9,6 +9,38 @@ import { useRouter } from "expo-router";
 export default function FavoritesScreen() {
   const router = useRouter();
   const { items, removeItem, clearFavorites } = useFavorite();
+
+  const handleClearFavorites = () => {
+    Alert.alert(
+      "Clear All Favorites",
+      "Are you sure you want to remove all items from your favorites?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Clear All",
+          style: "destructive",
+          onPress: () => {
+            clearFavorites();
+            Alert.alert(
+              "Favorites Cleared",
+              "All items have been removed from your favorites.",
+              [
+                { 
+                  text: "OK",
+                  style: "default"
+                }
+              ],
+              { cancelable: true }
+            );
+          }
+        }
+      ],
+      { cancelable: true }
+    );
+  };
 
   if (items.length === 0) {
     return (
@@ -72,7 +104,7 @@ export default function FavoritesScreen() {
           <Box className="bg-marble-green/10 w-full p-4 rounded-lg mt-4">
             <Pressable 
               className="bg-marble-green rounded-full py-4 mt-6 mb-6"
-              onPress={clearFavorites}
+              onPress={handleClearFavorites}
             >
               <Text className="text-white text-center text-lg font-semibold">
                 Clear All Favorites

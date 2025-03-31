@@ -1,4 +1,4 @@
-import { View, Text, Pressable, TextInput, ScrollView } from "react-native";
+import { View, Text, Pressable, TextInput, ScrollView, Alert } from "react-native";
 import { useCart } from "@/store/cartStore";
 import { Image } from "@/components/ui/image";
 import { Card } from "@/components/ui/card";
@@ -35,8 +35,34 @@ export default function CartScreen() {
       }, token);
     },
     onSuccess: () => {
-      clearCart();
-      router.replace("/");
+      Alert.alert(
+        "Order Successful!",
+        "Your order has been placed successfully. Thank you for shopping with us!",
+        [
+          { 
+            text: "OK",
+            style: "default",
+            onPress: () => {
+              clearCart();
+              router.replace("/");
+            }
+          }
+        ],
+        { cancelable: false }
+      );
+    },
+    onError: (error) => {
+      Alert.alert(
+        "Order Failed",
+        "There was an error processing your order. Please try again.",
+        [
+          { 
+            text: "OK",
+            style: "default"
+          }
+        ],
+        { cancelable: true }
+      );
     }
   });
 
