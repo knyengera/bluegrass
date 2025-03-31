@@ -1,4 +1,4 @@
-# Bluegrass
+# Bluegrass Digital - Moble App Developer Assessment
 
 A modern mobile application with a robust backend API.
 
