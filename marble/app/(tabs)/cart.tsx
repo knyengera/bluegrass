@@ -13,24 +13,27 @@ import { useAuth } from "@/store/authStore";
 export default function CartScreen() {
   const router = useRouter();
   const { items, removeProduct, increaseQuantity, decreaseQuantity, clearCart } = useCart();
-  const { user } = useAuth();
+  const { user, token } = useAuth();
 
   const subtotal = items.reduce((total, item) => total + (item.product.price * item.quantity), 0);
   const deliveryFee = subtotal * 0.10; // 10% of subtotal
   const total = subtotal + deliveryFee;
 
   const createOrderMutation = useMutation({
-    mutationFn: () => createOrder({
-      order: {
-        totalPrice: total,
-        status: 'pending'
-      },
-      items: items.map(item => ({
-        productId: item.product.id,
-        quantity: item.quantity,
-        price: item.product.price
-      }))
-    }),
+    mutationFn: async () => {
+      if (!token) throw new Error("No authentication token");
+      return createOrder({
+        order: {
+          totalPrice: total,
+          status: 'pending'
+        },
+        items: items.map(item => ({
+          productId: item.product.id,
+          quantity: item.quantity,
+          price: item.product.price
+        }))
+      }, token);
+    },
     onSuccess: () => {
       console.log("Order created successfully");
       clearCart();
