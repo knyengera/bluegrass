@@ -4,11 +4,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { router, Stack } from "expo-router";
 import { Pressable, Text, View } from "react-native";
 import { ArrowLeft } from "lucide-react-native";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import * as Font from 'expo-font';
 import { useCallback } from "react";
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
+import { useNetworkStatus } from '@/hooks/useNetworkStatus';
+import { OfflineScreen } from '@/components/OfflineScreen';
 
 const queryClient = new QueryClient();
 
@@ -28,6 +30,9 @@ export default function RootLayout() {
     'Helvetica Now Display': require('../assets/fonts/Monotype  - Helvetica Now Display.otf'),
   });
 
+  const isConnected = useNetworkStatus();
+  const [key, setKey] = useState(0);
+
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
       await SplashScreen.hideAsync();
@@ -44,35 +49,49 @@ export default function RootLayout() {
     return null;
   }
 
+  const handleRetry = () => {
+    setKey(prev => prev + 1);
+  };
+
+  if (isConnected === false) {
+    return (
+      <GluestackUIProvider key={key}>
+        <OfflineScreen onRetry={handleRetry} />
+      </GluestackUIProvider>
+    );
+  }
+
   return (
-    <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+    <GluestackUIProvider key={key}>
       <QueryClientProvider client={queryClient}>
-        <GluestackUIProvider>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-            <Stack.Screen 
-              name="product/[id]" 
-              options={{ 
-                headerShown: true,
-                presentation: 'modal'
-              }} 
-            />
-            <Stack.Screen 
-              name="profile/edit" 
-              options={{ 
-                headerShown: true,
-                title: "Edit Profile",
-                headerLeft: () => (
-                  <Pressable onPress={() => router.back()}>
-                    <ArrowLeft size={24} color="black" />
-                  </Pressable>
-                )
-              }}   
-            />
-          </Stack>
-        </GluestackUIProvider>
+        <Stack
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+          <Stack.Screen 
+            name="product/[id]" 
+            options={{ 
+              headerShown: true,
+              presentation: 'modal'
+            }} 
+          />
+          <Stack.Screen 
+            name="profile/edit" 
+            options={{ 
+              headerShown: true,
+              title: "Edit Profile",
+              headerLeft: () => (
+                <Pressable onPress={() => router.back()}>
+                  <ArrowLeft size={24} color="black" />
+                </Pressable>
+              )
+            }}   
+          />
+        </Stack>
       </QueryClientProvider>
-    </View>
+    </GluestackUIProvider>
   );
 }

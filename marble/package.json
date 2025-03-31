@@ -19,6 +19,7 @@
     "@gluestack-ui/overlay": "^0.1.22",
     "@gluestack-ui/toast": "^1.0.9",
     "@react-native-async-storage/async-storage": "^2.1.2",
+    "@react-native-community/netinfo": "^11.2.1",
     "@tanstack/react-query": "^5.71.0",
     "babel-plugin-module-resolver": "^5.0.2",
     "clsx": "^2.1.1",
