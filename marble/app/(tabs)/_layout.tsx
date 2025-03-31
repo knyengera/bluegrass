@@ -60,7 +60,7 @@ export default function TabsLayout() {
           ) : (
             <Link href="/(auth)/login" asChild>
               <Pressable className="ml-4">
-                <Icon name="User" size={18} color="black" />
+                <Icon name="LogIn" size={18} color="black" />
               </Pressable>
             </Link>
           )

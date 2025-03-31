@@ -81,7 +81,7 @@ export default function RegisterScreen() {
                 type="text"
                 value={name}
                 onChangeText={setName}
-                className="text-base font-heading text-marble-green"
+                className="text-lg font-heading text-marble-green"
               />
               {name.length > 0 && (
                 <InputSlot className="pr-3" onPress={() => setName("")}>
@@ -98,7 +98,7 @@ export default function RegisterScreen() {
                 type="text"
                 value={email}
                 onChangeText={setEmail}
-                className="text-base font-heading text-marble-green"
+                className="text-lg font-heading text-marble-green"
               />
               {email.length > 0 && (
                 <InputSlot className="pr-3" onPress={() => setEmail("")}>
@@ -115,7 +115,7 @@ export default function RegisterScreen() {
                 type="text"
                 value={mobile}
                 onChangeText={setMobile}
-                className="text-base font-heading text-marble-green"
+                className="text-lg font-heading text-marble-green"
                 placeholder="+27"
               />
               {mobile.length > 0 && (
@@ -133,7 +133,7 @@ export default function RegisterScreen() {
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChangeText={setPassword}
-                className="text-base font-heading text-marble-green"
+                className="text-lg font-heading text-marble-green"
               />
               <InputSlot className="pr-3" onPress={handleState}>
                 <InputIcon

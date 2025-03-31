@@ -74,7 +74,7 @@ export default function LoginScreen() {
                 type="text"
                 value={email}
                 onChangeText={setEmail}
-                className="text-base font-heading text-marble-green"
+                className="text-lg font-heading text-marble-green"
               />
               {email.length > 0 && (
                 <InputSlot className="pr-3" onPress={() => setEmail("")}>
@@ -85,13 +85,13 @@ export default function LoginScreen() {
           </VStack>
 
           <VStack space="xs">
-            <Text className="text-sm text-typography-400">Password</Text>
+            <Text className="text-md text-typography-400">Password</Text>
             <Input className="border-0 border-b border-typography-200 rounded-none pb-2">
               <InputField
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChangeText={setPassword}
-                className="text-base font-heading text-marble-green"
+                className="text-lg font-heading text-marble-green"
               />
               <InputSlot className="pr-3" onPress={handleState}>
                 <InputIcon
