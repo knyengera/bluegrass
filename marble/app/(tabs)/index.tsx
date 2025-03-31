@@ -84,12 +84,17 @@ export default function HomeScreen() {
   }
 
   return (
-    <View className="flex-1">
+    <View className="flex-1 bg-white">
       <CategoryFilter
         categories={categories || []}
         selectedCategory={selectedCategory}
         onSelectCategory={setSelectedCategory}
       />
+      
+      <View className="px-4 mb-2">
+        <Text className="text-2xl text-typography-400">Based on your selection</Text>
+        <Text className="text-5xl text-marble-green italic font-bold">Our products</Text>
+      </View>
       
       <FlatList
         key={nuColumns}

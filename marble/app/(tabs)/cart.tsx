@@ -8,10 +8,12 @@ import { useRouter } from "expo-router";
 import { useEffect } from "react";
 import { createOrder } from "@/api/products";
 import { useMutation } from "@tanstack/react-query";
+import { useAuth } from "@/store/authStore";
 
 export default function CartScreen() {
   const router = useRouter();
   const { items, removeProduct, increaseQuantity, decreaseQuantity, clearCart } = useCart();
+  const { user } = useAuth();
 
   const subtotal = items.reduce((total, item) => total + (item.product.price * item.quantity), 0);
   const deliveryFee = subtotal * 0.10; // 10% of subtotal
@@ -144,15 +146,27 @@ export default function CartScreen() {
             </View>
 
             {/* Checkout Button */}
-            <Pressable 
-              className="bg-marble-green rounded-full py-4 mt-6 mb-6"
-              onPress={handleCheckout}
-              disabled={createOrderMutation.isPending}
-            >
-              <Text className="text-white text-center text-lg font-semibold">
-                {createOrderMutation.isPending ? "Processing..." : "Checkout"}
-              </Text>
-            </Pressable>
+            {!user ? (
+              <View className="space-y-4">
+                <Pressable 
+                  className="bg-marble-green rounded-full py-4 mb-2"
+                  onPress={() => router.push("/login")}
+                >
+                  <Text className="text-white text-center text-lg font-semibold">Log In</Text>
+                </Pressable>
+                <Text className="text-center text-marble-green">Please log in to checkout</Text>
+              </View>
+            ) : (
+              <Pressable 
+                className="bg-marble-green rounded-full py-4 mt-6 mb-6"
+                onPress={handleCheckout}
+                disabled={createOrderMutation.isPending}
+              >
+                <Text className="text-white text-center text-lg font-semibold">
+                  {createOrderMutation.isPending ? "Processing..." : "Checkout"}
+                </Text>
+              </Pressable>
+            )}
           </Box>
         </View>
       </ScrollView>

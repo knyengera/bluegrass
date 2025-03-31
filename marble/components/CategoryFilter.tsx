@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, Pressable } from 'react-native';
+import { ScrollView, Pressable, View } from 'react-native';
 import { Text } from '@/components/ui/text';
 import { cn } from '@/lib/utils';
 
@@ -21,58 +21,58 @@ export default function CategoryFilter({
   selectedCategory,
   onSelectCategory,
 }: CategoryFilterProps) {
-  // Extract meat categories (assuming meat is always the first child with children)
-  const meatCategories = categories[0]?.children[0]?.children || [];
+  // Get the first level category (e.g. "Food")
+  const firstLevelCategory = categories[0];
+  // Get the second level category (e.g. "Meat")
+  const secondLevelCategory = firstLevelCategory?.children[0];
+  // Get the third level categories (e.g. "Beef", "Pork", etc)
+  const thirdLevelCategories = secondLevelCategory?.children || [];
 
   return (
-    <ScrollView 
-      horizontal 
-      showsHorizontalScrollIndicator={false}
-      className="mb-4"
-      contentContainerClassName="gap-4 px-4"
-    >
-      <Pressable
-        onPress={() => onSelectCategory('All')}
-        className={cn(
-          'py-2 px-4 rounded-full',
-          selectedCategory === 'All' 
-            ? 'bg-primary' 
-            : 'bg-muted'
-        )}
-      >
-        <Text
-          className={cn(
-            selectedCategory === 'All' 
-              ? 'text-primary-foreground' 
-              : 'text-foreground'
-          )}
-        >
-          All
-        </Text>
-      </Pressable>
+    <View className="my-6 bg-white">
+      <Text className="text-5xl text-marble-green italic font-bold px-4 mb-2">
+        {secondLevelCategory?.name || ''}
+      </Text>
+      <View className="w-full h-3 bg-marble-green mb-4" />
       
-      {meatCategories.map((category) => (
+      <ScrollView 
+        horizontal 
+        showsHorizontalScrollIndicator={false}
+        contentContainerClassName="gap-8 px-4"
+      >
         <Pressable
-          key={category.id}
-          onPress={() => onSelectCategory(category.name)}
-          className={cn(
-            'py-2 px-4 rounded-full',
-            selectedCategory === category.name 
-              ? 'bg-primary' 
-              : 'bg-muted'
-          )}
+          onPress={() => onSelectCategory('All')}
         >
           <Text
             className={cn(
-              selectedCategory === category.name 
-                ? 'text-primary-foreground' 
-                : 'text-foreground'
+              'text-lg',
+              selectedCategory === 'All' 
+                ? 'text-marble-green font-medium' 
+                : 'text-typography-400'
             )}
           >
-            {category.name}
+            All
           </Text>
         </Pressable>
-      ))}
-    </ScrollView>
+        
+        {thirdLevelCategories.map((category) => (
+          <Pressable
+            key={category.id}
+            onPress={() => onSelectCategory(category.name)}
+          >
+            <Text
+              className={cn(
+                'text-lg',
+                selectedCategory === category.name 
+                  ? 'text-marble-green font-medium' 
+                  : 'text-typography-400'
+              )}
+            >
+              {category.name}
+            </Text>
+          </Pressable>
+        ))}
+      </ScrollView>
+    </View>
   );
 } 
