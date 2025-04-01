@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { View, Text, Pressable, ScrollView, Alert } from "react-native";
 import { useFavorite } from "@/store/favoritesStore";
 import { Image } from "@/components/ui/image";
@@ -5,10 +6,14 @@ import { Card } from "@/components/ui/card";
 import Icon from "@/components/Icon";
 import { Box } from "@/components/ui/box";
 import { useRouter } from "expo-router";
+import ProductActionSheet from "@/components/ProductActionSheet";
+import { Product } from "@/types/Product";
 
 export default function FavoritesScreen() {
   const router = useRouter();
   const { items, removeItem, clearFavorites } = useFavorite();
+  const [isActionSheetVisible, setIsActionSheetVisible] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const handleClearFavorites = () => {
     Alert.alert(
@@ -40,6 +45,11 @@ export default function FavoritesScreen() {
       ],
       { cancelable: true }
     );
+  };
+
+  const handleViewDetails = (product: Product) => {
+    setSelectedProduct(product);
+    setIsActionSheetVisible(true);
   };
 
   if (items.length === 0) {
@@ -89,7 +99,7 @@ export default function FavoritesScreen() {
                     </Pressable>
 
                     <Pressable 
-                      onPress={() => router.push(`/product/${item.id}`)}
+                      onPress={() => handleViewDetails(item)}
                       className="border border-marble-green px-4 py-2 rounded-lg"
                     >
                       <Text className="text-marble-green">View Details</Text>
@@ -113,6 +123,16 @@ export default function FavoritesScreen() {
           </Box>
         </View>
       </ScrollView>
+      {selectedProduct && (
+        <ProductActionSheet 
+          product={selectedProduct}
+          visible={isActionSheetVisible}
+          onClose={() => {
+            setIsActionSheetVisible(false);
+            setSelectedProduct(null);
+          }}
+        />
+      )}
     </View>
   );
 } 
