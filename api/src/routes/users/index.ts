@@ -4,6 +4,7 @@ import { authenticateUser } from '../../middleware/authMiddleware.js';
 import { validateData } from '../../middleware/validationMiddleware.js';
 import { db } from "../../db/index.js";
 import { usersTable } from '../../db/userSchema.js';
+import { ordersTable, orderItemsTable } from '../../db/ordersSchema.js';
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
 import { createUserSchema, updateUserSchema } from '../../db/userSchema.js';
@@ -114,16 +115,33 @@ router.put('/:id', authenticateUser, validateData(updateUserSchema), async (req:
 router.delete('/:id', isAdmin, async (req: Request, res: Response): Promise<void> => {
     try {
         const { id } = req.params;
+        const userId = parseInt(id);
         
-        const [existingUser] = await db.select().from(usersTable).where(eq(usersTable.id, parseInt(id)));
+        // Check if user exists
+        const [existingUser] = await db.select().from(usersTable).where(eq(usersTable.id, userId));
         if (!existingUser) {
             res.status(404).json({ message: 'User not found' });
             return;
         }
 
-        await db.delete(usersTable).where(eq(usersTable.id, parseInt(id)));
-        res.status(200).json({ message: 'User deleted successfully' });
+        // Start a transaction to ensure all deletions succeed or none do
+        await db.transaction(async (tx) => {
+            // First, delete all order items associated with the user's orders
+            const userOrders = await tx.select().from(ordersTable).where(eq(ordersTable.userId, userId));
+            for (const order of userOrders) {
+                await tx.delete(orderItemsTable).where(eq(orderItemsTable.orderId, order.id));
+            }
+
+            // Then delete all orders associated with the user
+            await tx.delete(ordersTable).where(eq(ordersTable.userId, userId));
+
+            // Finally delete the user
+            await tx.delete(usersTable).where(eq(usersTable.id, userId));
+        });
+
+        res.status(200).json({ message: 'User and associated data deleted successfully' });
     } catch (error) {
+        console.error('Error deleting user:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 });
