@@ -1,9 +1,8 @@
-
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "../context/AuthContext";
 import { ArrowDown, ArrowUp, Clock, Package, ShoppingBag, Users } from "lucide-react";
-import { getOrders, getProducts, getUsers } from "@/services/api";
+import { getOrders, getProducts, getUsers, getCategories } from "@/services/api";
 import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 
@@ -84,6 +83,13 @@ const Dashboard = () => {
     enabled: !!token,
   });
 
+  // Fetch categories data
+  const { data: categories = [] } = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => token ? getCategories(token) : Promise.resolve([]),
+    enabled: !!token,
+  });
+
   useEffect(() => {
     if (orders.length > 0) {
       // Count pending orders
@@ -150,12 +156,31 @@ const Dashboard = () => {
 
   const popularProducts = products.length > 0 ? getPopularProducts() : [];
 
+  // Helper function to get category name by ID
+  const getCategoryName = (categoryId: number): string => {
+    const findCategory = (cats: any[]): string => {
+      for (const cat of cats) {
+        if (cat.id === categoryId) return cat.name;
+        if (cat.children && cat.children.length > 0) {
+          const foundInChildren = findCategory(cat.children);
+          if (foundInChildren) return foundInChildren;
+        }
+      }
+      return "Unknown";
+    };
+    return findCategory(categories);
+  };
+
   // Get low stock products
   const getLowStockProducts = () => {
     return products
       .filter(product => product.quantity < 100)
       .sort((a, b) => a.quantity - b.quantity)
-      .slice(0, 5);
+      .slice(0, 5)
+      .map(product => ({
+        ...product,
+        categoryName: getCategoryName(product.categoryId)
+      }));
   };
 
   const lowStockProducts = products.length > 0 ? getLowStockProducts() : [];
@@ -247,7 +272,7 @@ const Dashboard = () => {
                     <div>
                       <p className="font-medium">{product.name}</p>
                       <p className="text-sm text-muted-foreground">
-                        Category: {product.categoryId}
+                        Category: {product.categoryName}
                       </p>
                     </div>
                     <div className="text-right">
