@@ -39,6 +39,12 @@ router.post('/register', validateData(createUserSchema), async (req, res) => {
         // Send verification email
         await emailService.sendEmailVerification(user.email, verificationCode);
 
+        // Send admin notification
+        const adminEmails = process.env.ADMIN_EMAILS?.split(',') || [];
+        if (adminEmails.length > 0) {
+          await emailService.sendNewUserNotification(adminEmails, user.email, user.name);
+        }
+
         const { password, ...userWithoutPassword } = user;
         const token = jwt.sign(
             { userId: user.id, name: user.name, email: user.email, role: user.role, iss: JWT_ISSUER, aud: JWT_AUDIENCE },

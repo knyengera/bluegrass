@@ -195,4 +195,26 @@ export class EmailService {
       throw error;
     }
   }
+
+  async sendNewUserNotification(adminEmails: string | string[], userEmail: string, userName: string) {
+    try {
+      await this.resend.emails.send({
+        from: `Pantry by Marble <${process.env.FROM_EMAIL}>`,
+        to: adminEmails,
+        subject: 'New User Registration',
+        html: `
+          <h1>New User Registration</h1>
+          <p>A new user has registered on the platform:</p>
+          <ul>
+            <li>Name: ${userName}</li>
+            <li>Email: ${userEmail}</li>
+          </ul>
+          <p>Please verify their account if required.</p>
+        `
+      });
+    } catch (error) {
+      console.error('Failed to send new user notification:', error);
+      throw error;
+    }
+  }
 } 
