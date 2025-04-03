@@ -10,6 +10,8 @@ export const usersTable = pgTable('users', {
     mobile: varchar('mobile', { length: 255 }).notNull(),
     role: varchar('role', { length: 255 }).notNull().default('user'),
     isActive: boolean('is_active').notNull().default(true),
+    isEmailVerified: boolean('is_email_verified').notNull().default(false),
+    emailVerificationCode: varchar('email_verification_code', { length: 255 }),
     address1: varchar('address1', { length: 255 }),
     address2: varchar('address2', { length: 255 }),
     city: varchar('city', { length: 255 }),
@@ -28,6 +30,8 @@ export const createUserSchema = baseSchema
         updatedAt: true,
         role: true,
         isActive: true,
+        isEmailVerified: true,
+        emailVerificationCode: true,
     })
     .extend({
         name: z.string().min(1, "Name cannot be empty"),
@@ -41,6 +45,8 @@ export const updateUserSchema = baseSchema
         createdAt: true,
         role: true,
         isActive: true,
+        isEmailVerified: true,
+        emailVerificationCode: true,
     })
     .extend({
         name: z.string().min(1, "Name cannot be empty").optional(),

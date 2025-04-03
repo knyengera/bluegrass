@@ -3,7 +3,11 @@ import { RequestHandler } from "express";
 import { db } from "../../db/index.js";
 import { ordersTable, orderItemsTable } from "../../db/ordersSchema.js";
 import { productsTable } from "../../db/productsSchema.js";
+import { usersTable } from "../../db/userSchema.js";
 import { eq, inArray } from "drizzle-orm";
+import { EmailService } from "../../services/email.service.js";
+
+const emailService = new EmailService();
 
 export const getAllOrders: RequestHandler = async (req, res) => {
     try {
@@ -198,6 +202,54 @@ export const createOrder: RequestHandler = async (req, res) => {
             )
             .returning();
 
+        // Get user email for notification
+        const user = await db.query.usersTable.findFirst({
+            where: eq(usersTable.id, Number(userId))
+        });
+
+        if (user) {
+            // Get all admin emails
+            const adminUsers = await db.query.usersTable.findMany({
+                where: eq(usersTable.role, 'admin'),
+                columns: {
+                    email: true
+                }
+            });
+
+            const adminEmails = adminUsers.map(admin => admin.email);
+
+            // Send new order notification to client and all admins
+            await emailService.sendNewOrderNotification(
+                newOrder.id.toString(),
+                user.email,
+                adminEmails
+            );
+
+            // Check for low stock products
+            const lowStockProducts = [];
+            for (const item of availableItems) {
+                const product = await db.query.productsTable.findFirst({
+                    where: eq(productsTable.id, item.productId)
+                });
+
+                if (product && (product.quantity ?? 0) < 100) {
+                    lowStockProducts.push({
+                        name: product.name,
+                        currentStock: product.quantity ?? 0
+                    });
+                }
+            }
+
+            // Send low stock notification to all admins if needed
+            if (lowStockProducts.length > 0) {
+                await emailService.sendLowStockNotification(
+                    adminEmails,
+                    lowStockProducts
+                );
+            }
+        }
+
+        // Update product quantities
         for (const item of availableItems) {
             const currentQuantity = productQuantities.get(item.productId)!;
             await db
@@ -237,6 +289,30 @@ export const updateOrder: RequestHandler = async (req, res) => {
         if (!updatedOrder) {
             res.status(404).json({ error: "Order not found" });
             return;
+        }
+
+        // Get user email for notification
+        const user = await db.query.usersTable.findFirst({
+            where: eq(usersTable.id, updatedOrder.userId)
+        });
+
+        if (user && req.body.status) {
+            // Get all admin emails
+            const adminUsers = await db.query.usersTable.findMany({
+                where: eq(usersTable.role, 'admin'),
+                columns: {
+                    email: true
+                }
+            });
+
+            const adminEmails = adminUsers.map(admin => admin.email);
+
+            // Send status update notification to all recipients
+            await emailService.sendOrderStatusUpdate(
+                orderId,
+                [user.email, ...adminEmails],
+                req.body.status
+            );
         }
 
         res.status(200).json(updatedOrder);

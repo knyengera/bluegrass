@@ -50,3 +50,19 @@ export function verifyAdmin(req: Request, res: Response, next: NextFunction) {
     }
     next();
 }
+
+export const authenticateUser = (req: Request, res: Response, next: NextFunction): void => {
+    try {
+        const token = req.headers.authorization;
+        if (!token) {
+            res.status(401).json({ message: 'No token provided' });
+            return;
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as any;
+        req.user = decoded;
+        next();
+    } catch (error) {
+        res.status(401).json({ message: 'Invalid token' });
+    }
+};
