@@ -63,7 +63,9 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
       )}
     >
       <div className="flex h-16 items-center justify-between border-b border-sidebar-border px-4">
-        {!collapsed && <Logo useImage={false} size="large" textColor="white" className="text-sidebar-foreground" />}
+        {!collapsed && 
+        <img src="/logo-wide.png" alt="Pantry by Marble" className="w-36" />
+        }
         <Button
           variant="ghost"
           size="icon"
