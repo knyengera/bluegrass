@@ -222,7 +222,20 @@ export const createOrder: RequestHandler = async (req, res) => {
             await emailService.sendNewOrderNotification(
                 newOrder.id.toString(),
                 user.email,
-                adminEmails
+                adminEmails,
+                availableItems.map(item => ({
+                    name: productNames.get(item.productId)!,
+                    quantity: item.quantity,
+                    price: productPrices.get(item.productId)!
+                })),
+                {
+                    address1: user.address1,
+                    address2: user.address2,
+                    city: user.city,
+                    province: user.province,
+                    postalCode: user.postalCode,
+                    country: user.country
+                }
             );
 
             // Check for low stock products

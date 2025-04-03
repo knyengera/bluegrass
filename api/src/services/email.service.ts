@@ -1,20 +1,68 @@
 import { Resend } from 'resend';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export class EmailService {
   private resend: Resend;
+  private orderConfirmationTemplate: string;
 
   constructor() {
-    this.resend = new Resend(process.env.RESEND_API_KEY);
+    this.resend = new Resend(process.env.RESEND_API_KEY as string);
+    this.orderConfirmationTemplate = fs.readFileSync(
+      path.join(__dirname, '../templates/order_confirmation.html'),
+      'utf-8'
+    );
+  }
+
+  private formatCurrency(amount: number): string {
+    return amount.toFixed(2);
+  }
+
+  private generateOrderItemsHTML(items: Array<{ name: string; quantity: number; price: number }>): string {
+    return items.map(item => {
+      const subtotal = item.quantity * item.price;
+      return `
+        <tr class="order-item">
+          <td style="text-align: left; padding: 10px;">${item.name}</td>
+          <td style="text-align: center; padding: 10px;">${item.quantity}</td>
+          <td style="text-align: right; padding: 10px;">R${this.formatCurrency(item.price)}</td>
+          <td style="text-align: right; padding: 10px;">R${this.formatCurrency(subtotal)}</td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  private formatAddress(address: {
+    address1?: string | null;
+    address2?: string | null;
+    city?: string | null;
+    province?: string | null;
+    postalCode?: string | null;
+    country?: string | null;
+  }): string {
+    const parts = [
+      address.address1,
+      address.address2,
+      address.city,
+      address.province,
+      address.postalCode,
+      address.country
+    ].filter(Boolean);
+    return parts.join(', ');
   }
 
   async sendEmailVerification(email: string, verificationCode: string) {
     try {
       await this.resend.emails.send({
-        from: 'Pantry by Marble <noreply@pantrybymarble.com>',
+        from: `Pantry by Marble <${process.env.FROM_EMAIL}>`,
         to: email,
         subject: 'Verify your email address',
         html: `
-          <h1>Welcome to Bluegrass!</h1>
+          <h1>Welcome to Pantry by Marble!</h1>
           <p>Please verify your email address by entering the following code in the app:</p>
           <h2>${verificationCode}</h2>
           <p>This code will expire in 24 hours.</p>
@@ -26,30 +74,62 @@ export class EmailService {
     }
   }
 
-  async sendNewOrderNotification(orderId: string, clientEmail: string, adminEmails: string | string[]) {
+  async sendNewOrderNotification(
+    orderId: string, 
+    clientEmail: string, 
+    adminEmails: string | string[], 
+    orderItems: Array<{ name: string; quantity: number; price: number }>,
+    userAddress: {
+      address1?: string | null;
+      address2?: string | null;
+      city?: string | null;
+      province?: string | null;
+      postalCode?: string | null;
+      country?: string | null;
+    }
+  ) {
     try {
+      // Calculate order totals
+      const subtotal = orderItems.reduce((sum, item) => sum + (item.quantity * item.price), 0);
+      const deliveryFee = subtotal * 0.1; // 10% delivery fee
+      const total = subtotal + deliveryFee;
+
+      // Generate order items HTML
+      const orderItemsHTML = this.generateOrderItemsHTML(orderItems);
+
+      // Format addresses
+      const formattedAddress = this.formatAddress(userAddress);
+
+      // Replace template placeholders
+      const emailHTML = this.orderConfirmationTemplate
+        .replace('{{order_items}}', orderItemsHTML)
+        .replace('{{order_number}}', orderId)
+        .replace('{{subtotal}}', this.formatCurrency(subtotal))
+        .replace('{{delivery_fee}}', this.formatCurrency(deliveryFee))
+        .replace('{{total}}', this.formatCurrency(total))
+        .replace('{{shipping_address}}', formattedAddress)
+        .replace('{{billing_address}}', formattedAddress);
+
       // Send to client
       await this.resend.emails.send({
-        from: 'Pantry by Marble <noreply@pantrybymarble.com>',
+        from: `Pantry by Marble <${process.env.FROM_EMAIL}>`,
         to: clientEmail,
         subject: 'Order Confirmation',
-        html: `
-          <h1>Thank you for your order!</h1>
-          <p>Your order #${orderId} has been received and is being processed.</p>
-          <p>We'll notify you when your order status changes.</p>
-        `
+        html: emailHTML
       });
 
       // Send to admins
       await this.resend.emails.send({
-        from: 'Pantry by Marble <noreply@pantrybymarble.com>',
+        from: `Pantry by Marble <${process.env.FROM_EMAIL}>`,
         to: adminEmails,
         subject: 'New Order Received',
-        html: `
-          <h1>New Order Notification</h1>
-          <p>A new order #${orderId} has been placed.</p>
-          <p>Please process this order as soon as possible.</p>
-        `
+        html: emailHTML.replace(
+          '<h1 style="margin: 0; color: #001942; font-size: 32px;">Order Confirmation</h1>',
+          '<h1 style="margin: 0; color: #001942; font-size: 32px;">New Order Notification</h1>'
+        ).replace(
+          '<p style="color: #53627a; margin-top: 20px;">Thank you for your order!</p>',
+          '<p style="color: #53627a; margin-top: 20px;">A new order has been placed. Please process it as soon as possible.</p>'
+        )
       });
     } catch (error) {
       console.error('Failed to send order notification:', error);
@@ -60,7 +140,7 @@ export class EmailService {
   async sendOrderStatusUpdate(orderId: string, emails: string | string[], status: string) {
     try {
       await this.resend.emails.send({
-        from: 'Pantry by Marble <noreply@pantrybymarble.com>',
+        from: `Pantry by Marble <${process.env.FROM_EMAIL}>`,
         to: emails,
         subject: 'Order Status Update',
         html: `
@@ -79,7 +159,7 @@ export class EmailService {
       const productList = products.map(p => `<li>${p.name} - Current stock: ${p.currentStock}</li>`).join('');
       
       await this.resend.emails.send({
-        from: 'Pantry by Marble <noreply@pantrybymarble.com>',
+        from: `Pantry by Marble <${process.env.FROM_EMAIL}>`,
         to: adminEmails,
         subject: 'Low Stock Alert',
         html: `
@@ -100,7 +180,7 @@ export class EmailService {
   async sendPasswordReset(email: string, newPassword: string) {
     try {
       await this.resend.emails.send({
-        from: 'Pantry by Marble <noreply@pantrybymarble.com>',
+        from: `Pantry by Marble <${process.env.FROM_EMAIL}>`,
         to: email,
         subject: 'Password Reset',
         html: `
