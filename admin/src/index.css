@@ -1,0 +1,97 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 232 26% 14%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 232 26% 14%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 232 26% 14%;
+    
+    --primary: 84 14% 34%; /* marble-green #54634B */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 86 15% 61%; /* marble-green-light #97af89 */
+    --secondary-foreground: 232 26% 14%;
+
+    --muted: 84 14% 90%;
+    --muted-foreground: 84 5% 45%;
+
+    --accent: 84 14% 65%;
+    --accent-foreground: 232 26% 14%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 84 14% 34%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 84 14% 34%; /* marble-green #54634B */
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 86 15% 61%; /* marble-green-light #97af89 */
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 84 14% 25%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 84 14% 25%;
+    --sidebar-ring: 86 15% 61%;
+  }
+
+  .dark {
+    --background: 232 26% 14%;
+    --foreground: 0 0% 98%;
+
+    --card: 232 26% 14%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 232 26% 14%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 84 14% 34%; /* marble-green #54634B */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 86 15% 30%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 232 20% 20%;
+    --muted-foreground: 232 10% 70%;
+
+    --accent: 86 15% 40%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 232 20% 20%;
+    --input: 232 20% 20%;
+    --ring: 84 14% 34%;
+    
+    --sidebar-background: 84 14% 20%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 84 14% 34%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 84 14% 15%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 84 14% 15%;
+    --sidebar-ring: 84 14% 34%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
