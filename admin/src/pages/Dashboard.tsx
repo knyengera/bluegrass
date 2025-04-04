@@ -94,7 +94,7 @@ const Dashboard = () => {
     if (orders.length > 0) {
       // Count pending orders
       const pendingOrdersList = orders.filter(order => 
-        order.status.toLowerCase() === "pending");
+        order.status.toLowerCase() != "completed");
       
       // Calculate projected revenue (sum of all pending orders)
       const projectedRevenue = pendingOrdersList.reduce((sum, order) => 
@@ -199,7 +199,7 @@ const Dashboard = () => {
           title="Projected Revenue"
           value={formatCurrency(stats.projectedRevenue)}
           icon={ShoppingBag}
-          trend="12%"
+          trend="99%"
           color="bg-primary"
           trendUp={true}
         />
@@ -207,23 +207,23 @@ const Dashboard = () => {
           title="Pending Orders"
           value={stats.pendingOrders.toString()}
           icon={Clock}
-          trend="8%"
+          trend="98%"
           color="bg-amber-500"
-          trendUp={false}
+          trendUp={true}
         />
         <StatCard
           title="Completed Orders"
           value={stats.completedOrders.toString()}
           icon={Package}
-          trend="24%"
+          trend="25%"
           color="bg-green-500"
           trendUp={true}
         />
         <StatCard
-          title="Active Users (Non-Admin)"
+          title="Active Clients"
           value={stats.activeUsers.toString()}
           icon={Users}
-          trend="18%"
+          trend="50%"
           color="bg-pink-500"
           trendUp={true}
         />
